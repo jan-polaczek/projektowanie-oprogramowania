@@ -1,1 +1,25 @@
-<p>forestry-list works!</p>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">ID leśnictwa</th>
+    <th scope="col">Nazwa leśnictwa</th>
+    <th scope="col">Nadleśnictwo</th>
+    <th scope="col">Powierzchnia</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let forestry of forestries">
+    <th scope="row" style="width: 120px">#{{forestry.forestry_id}}</th>
+    <td>{{forestry.name}}</td>
+    <td>{{forestry.forest_district_name}}</td>
+    <td>{{forestry.area}} ha</td>
+    <td class="text-center">
+      <button class="btn btn-outline-danger mx-1">🗑️</button>
+      <button class="btn btn-outline-primary mx-1">✏️</button>
+      <button class="btn btn-outline-success mx-1">🗺️</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
