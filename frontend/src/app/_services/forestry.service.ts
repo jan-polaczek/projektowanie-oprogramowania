@@ -1,34 +1,43 @@
 import {Injectable} from '@angular/core';
+import {Forestry} from "../_interfaces/Forestry";
+import {Observable, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ForestryService {
 
+  forestries: Forestry[] = [
+    {
+      forestry_id: 1,
+      forest_district_id: 1,
+      forest_district_name: "Nadleśnictwo 1",
+      forester: "Grzegorz Brzęczyszczykiewicz",
+      name: "Leśnictwo 1",
+      area: 100
+    },
+    {
+      forestry_id: 2,
+      forest_district_id: 1,
+      forest_district_name: "Nadleśnictwo 1",
+      forester: "Grzegorz Brzęczyszczykiewicz",
+      name: "Leśnictwo 2",
+      area: 200
+    },
+    {
+      forestry_id: 3,
+      forest_district_id: 1,
+      forest_district_name: "Nadleśnictwo 1",
+      forester: "Grzegorz Brzęczyszczykiewicz",
+      name: "Leśnictwo 3",
+      area: 300
+    },
+  ];
+
   constructor() {
   }
-}
 
-export interface ForestDistrict {
-  forest_district_id: number
-  forest_manager: Employee
-  name: string
-  forestries: Forestry[]
-}
-
-export interface Forestry {
-  forestry_id: number;
-  forest_district_id: number;
-  forest_district_name: string;
-  forester: string; // todo -> Employee
-  name: string;
-  area: number;
-}
-
-export interface Employee {
-  employee_id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone_number: string;
+  getForestries(): Observable<Forestry[]> {
+    return of(this.forestries);
+  }
 }
