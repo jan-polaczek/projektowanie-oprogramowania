@@ -40,4 +40,9 @@ export class ForestryService {
   getForestries(): Observable<Forestry[]> {
     return of(this.forestries);
   }
+
+  deleteForestry(forestryId: number): Observable<Forestry[]> {
+    this.forestries = this.forestries.filter(forestry => forestry.forestry_id !== forestryId)
+    return of(this.forestries);
+  }
 }
