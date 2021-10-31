@@ -1,3 +1,8 @@
+# Zanim zaczniesz
+
+Pamiętaj uruchomić kontener z bazą danych. Skrypt `run.bat` możesz znaleźć w katalogu docker/pop_postgres_db.
+
+
 # Setup projektu
 
 Żeby przygotować projekt do uruchomienia należy:
