@@ -7,6 +7,9 @@ class ForestryDistrict(models.Model):
 
     name = models.CharField(max_length=48)
 
+    def __str__(self):
+        return self.name
+
 
 
 class Forestry(models.Model):
@@ -16,3 +19,6 @@ class Forestry(models.Model):
     forester = models.IntegerField()
     name = models.CharField(max_length=48)
     area = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.name
