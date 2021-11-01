@@ -5,6 +5,7 @@ import {ForestryFormComponent} from './forestry-form/forestry-form.component';
 import {ForestryListComponent} from './forestry-list/forestry-list.component';
 import {NavbarComponent} from './navbar/navbar.component';
 import {RouterModule} from "@angular/router";
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -17,6 +18,8 @@ import {RouterModule} from "@angular/router";
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     NavbarComponent

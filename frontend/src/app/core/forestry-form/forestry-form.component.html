@@ -1,1 +1,78 @@
-<p>forestry-form works!</p>
+<div style="width: 400px; margin: auto;">
+  <h2 *ngIf="isAddMode">Dodawanie leśnictwa</h2>
+  <h2 *ngIf="!isAddMode">Edycja leśnictwa</h2>
+  <form [formGroup]="registrationForm" (ngSubmit)="saveForestry(content)" novalidate>
+    <div class="form-group">
+      <label for="name">Nazwa leśnictwa</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        required
+        formControlName="name"
+        name="name"
+      />
+      <div *ngIf="submitted && form.name.invalid" class="alert alert-danger">
+        <div *ngIf="form.name.errors?.required">Uzupełnij pole</div>
+      </div>
+
+      <label for="forest_district_name">Nadleśnictwo</label>
+      <select name="forest_district_name" id="forest_district_name" class="form-control" formControlName="forest_district_name">
+        <option selected="" value=""></option>
+        <option [ngValue]="d" *ngFor="let d of forestryService.forestDistricts">
+          {{d}}
+        </option>
+      </select>
+      <div *ngIf="submitted && form.forest_district_name.invalid" class="alert alert-danger">
+        <div *ngIf="form.forest_district_name.errors?.required">Uzupełnij pole</div>
+      </div>
+
+      <label for="forester">Leśniczy</label>
+      <select name="forester" id="forester" class="form-control" formControlName="forester">
+        <option selected="" value=""></option>
+        <option [ngValue]="c" *ngFor="let c of forestryService.foresters">
+          {{c}}
+        </option>
+      </select>
+      <div *ngIf="submitted && form.forester.invalid" class="alert alert-danger">
+        <div *ngIf="form.forester.errors?.required">Uzupełnij pole</div>
+      </div>
+
+      <label for="area">Powierzchnia</label>
+      <div class="input-group">
+        <input
+          type="number"
+          class="form-control"
+          id="area"
+          required
+          formControlName="area"
+          name="area"
+        />
+        <div class="input-group-append">
+          <span class="input-group-text">ha</span>
+        </div>
+      </div>
+
+      <div *ngIf="submitted && form.area.invalid" class="alert alert-danger">
+        <div *ngIf="form.area.errors?.required">Uzupełnij pole</div>
+      </div>
+
+      <button type="submit" class="btn btn-success">Zatwierdź</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Zapisano poprawnie</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Zapisano poprawnie</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close()">Wróć do listy</button>
+  </div>
+</ng-template>

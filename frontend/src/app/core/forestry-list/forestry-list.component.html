@@ -17,12 +17,14 @@
     <td>{{forestry.area}} ha</td>
     <td class="text-center">
       <button class="btn btn-outline-danger mx-1" (click)="openDeleteModal(content, forestry)">🗑️</button>
-      <button class="btn btn-outline-primary mx-1">✏️</button>
+      <button class="btn btn-outline-primary mx-1" routerLink="/form/{{forestry.forestry_id}}" >✏️</button>
       <button class="btn btn-outline-success mx-1">🗺️</button>
     </td>
   </tr>
   </tbody>
 </table>
+
+<button class="btn btn-outline-primary mx-1" routerLink="/form" >Dodaj leśnictwo</button>
 
 <ng-template #content let-modal>
   <div class="modal-header">
