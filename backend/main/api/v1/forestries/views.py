@@ -13,6 +13,8 @@ from .serializers import (
     ForestryListRequestSerializer
 )
 
+from drf_yasg.utils import swagger_auto_schema
+
 class MySampleAPIView(APIView):
 
     def post(self, request, format=None):
@@ -29,6 +31,13 @@ class MySampleAPIView(APIView):
 
 class ForestryAPIView(APIView):
 
+    @swagger_auto_schema(
+        operation_summary="Retrieves single record data",
+        operation_description="Retrieves details of single forestry record based on the id given in the URL",
+        responses={
+            status.HTTP_200_OK: ForestryResponseSerializer
+        }
+    )
     def get(self, request, forestry_id:int, format=None):
 
         try:
@@ -40,7 +49,14 @@ class ForestryAPIView(APIView):
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-
+    @swagger_auto_schema(
+        operation_summary="Forestry partial update",
+        operation_description="Allows for partial update of a single forestry. Updates forestry based on id given in the URL",
+        request_body=ForestryUpdateRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestryResponseSerializer
+        }
+    )
     def patch(self, request, forestry_id:int, format=None):
 
         req_serializer = ForestryUpdateRequestSerializer(data=request.data, partial=True)
@@ -59,7 +75,10 @@ class ForestryAPIView(APIView):
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+    @swagger_auto_schema(
+        operation_summary="Deletes a forestry",
+        operation_description="Deletes a single forestry permanently. Forestry is deleted based on id given in the URL"
+    )
     def delete(self, request, forestry_id:int, format=None):
         try:
             obj = Forestry.objects.get(id=forestry_id)
@@ -68,12 +87,20 @@ class ForestryAPIView(APIView):
 
         obj.delete()
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
 class ForestriesAPIVIew(APIView):
 
+    @swagger_auto_schema(
+        operation_summary="Returns one page of forestries",
+        operation_description="You can use this endpoint to iterate over forestries",
+        query_serializer=ForestryListRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestryResponseSerializer
+        }
+    )
     def get(self, request, format=None):
         req_serializer = ForestryListRequestSerializer(data=request.query_params)
 
@@ -93,6 +120,14 @@ class ForestriesAPIVIew(APIView):
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+    @swagger_auto_schema(
+        operation_summary="Adds new forestry",
+        operation_description="Use this endpoint to create new forestries",
+        request_body=ForestryCreateRequestSerializer,
+        responses={
+            status.HTTP_201_CREATED: ForestryResponseSerializer
+        }
+    )
     def post(self, request, format=None):
         req_serializer = ForestryCreateRequestSerializer(data=request.data)
 

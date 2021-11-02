@@ -71,8 +71,14 @@ class ForestryResponseSerializer(serializers.ModelSerializer):
 
 class ForestryListRequestSerializer(serializers.Serializer):
 
-    page = serializers.IntegerField(required=False, default=1)
-    per_page = serializers.IntegerField(required=False, default=100)
+    page = serializers.IntegerField(required=False, default=1, 
+        label="Page number", 
+        help_text="Page number to return"
+    )
+    per_page = serializers.IntegerField(required=False, default=100,
+        label="Items per page",
+        help_text="Defines how many items per page should be returned (must be between 1 and 500)"
+    )
 
     def validate(self, data):
         data = super().validate(data)
