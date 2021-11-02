@@ -1,8 +1,15 @@
 export interface Forestry {
   forestry_id: number;
-  forest_district_id: number;
-  forest_district_name: string;
-  forester: string; // todo -> Employee
+  forestry_district_id: number;
+  forestry_district_name: string;
+  forester: number;
   name: string;
   area: number;
+}
+
+export interface ForestryAddEditRequest {
+  forestry_district: number;
+  forester: number;
+  name: string;
+  area: string;
 }

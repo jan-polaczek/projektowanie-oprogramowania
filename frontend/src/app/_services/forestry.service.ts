@@ -1,68 +1,107 @@
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Forestry} from "../_interfaces/Forestry";
-import {Observable, of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {Employee} from '../_interfaces/Employee';
+import {Forestry, ForestryAddEditRequest} from '../_interfaces/Forestry';
+import {ICreateEditForestry, IDeleteForestry, IGetForestry, IListForetries} from '../_interfaces/forestry-service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ForestryService {
+export class ForestryService implements IDeleteForestry, IListForetries, ICreateEditForestry, IGetForestry {
+
+  foresters: Employee[] = [
+    {
+      employee_id: 0,
+      first_name: 'Damian',
+      last_name: 'Smugorzewski',
+      email: 'damian@forestryapp.com',
+      phone_number: '123456789',
+    },
+    {
+      employee_id: 1,
+      first_name: 'Szymon',
+      last_name: 'Wydziałkiewicz',
+      email: 'szymon@forestryapp.com',
+      phone_number: '234567891',
+    },
+    {
+      employee_id: 2,
+      first_name: 'Sebastian',
+      last_name: 'Jurga',
+      email: 'sebastian@forestryapp.com',
+      phone_number: '345678912',
+    },
+    {
+      employee_id: 3,
+      first_name: 'Bartłomiej',
+      last_name: 'Rosa',
+      email: 'bartłomiej@forestryapp.com',
+      phone_number: '456789123',
+    }];
 
   forestries: Forestry[] = [
     {
       forestry_id: 1,
-      forest_district_id: 1,
-      forest_district_name: 'Nadleśnictwo 1',
-      forester: 'Sebastian',
+      forestry_district_id: 1,
+      forestry_district_name: 'Nadleśnictwo 1',
+      forester: 0,
       name: 'Leśnictwo 1',
-      area: 100
+      area: 100,
     },
     {
       forestry_id: 2,
-      forest_district_id: 1,
-      forest_district_name: 'Nadleśnictwo 1',
-      forester: 'Szymon',
+      forestry_district_id: 1,
+      forestry_district_name: 'Nadleśnictwo 1',
+      forester: 1,
       name: 'Leśnictwo 2',
-      area: 200
+      area: 200,
     },
     {
       forestry_id: 3,
-      forest_district_id: 1,
-      forest_district_name: 'Nadleśnictwo 1',
-      forester: 'Damian',
+      forestry_district_id: 1,
+      forestry_district_name: 'Nadleśnictwo 1',
+      forester: 2,
       name: 'Leśnictwo 3',
-      area: 300
+      area: 300,
     },
   ];
 
-  foresters: any = ['Damian', 'Szymon', 'Sebastian', 'Bartłomiej'];
-  forestDistricts: any = ['Nadleśnictwo 1', 'Nadleśnictwo 2', 'Nadleśnictwo 3'];
+  forestDistricts: any = [
+    {
+      id: 1,
+      name: 'Nadleśnictwo 1',
+    },
+    {
+      id: 2,
+      name: 'Nadleśnictwo 2',
+    },
+    {
+      id: 3,
+      name: 'Nadleśnictwo 3',
+    }];
 
   constructor(private http: HttpClient) {
   }
 
   getForestries(): Observable<Forestry[]> {
-    return of(this.forestries);
+    return this.http.get<Forestry[]>(`${environment.apiUrl}forestries`);
   }
 
-  deleteForestry(forestryId: number): Observable<Forestry[]> {
-    this.forestries = this.forestries.filter(forestry => forestry.forestry_id !== forestryId)
-    return of(this.forestries);
+  deleteForestry(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}forestry/${id}`);
   }
 
-  editForestry(forestry: Forestry): Observable<Forestry> {
-    const idx = this.forestries.findIndex((obj => obj.forestry_id == forestry.forestry_id));
-    this.forestries[idx] = forestry;
-    return of(forestry);
+  editForestry(id: number, forestry: ForestryAddEditRequest): Observable<Forestry> {
+    return this.http.patch<Forestry>(`${environment.apiUrl}forestry/${id}`, forestry);
   }
 
-  createForestry(forestry: Forestry): Observable<Forestry> {
-    this.forestries.push(forestry);
-    return of(forestry);
+  createForestry(forestry: ForestryAddEditRequest): Observable<Forestry> {
+    return this.http.post<Forestry>(`${environment.apiUrl}forestries/`, forestry);
   }
 
-  getById(id: number): Observable<Forestry> {
-    const forestry = this.forestries.find(x => x.forestry_id == id);
-    return of(forestry);
+  getForestryById(id: number): Observable<Forestry> {
+    return this.http.get<Forestry>(`${environment.apiUrl}forestry/${id}`);
   }
 }

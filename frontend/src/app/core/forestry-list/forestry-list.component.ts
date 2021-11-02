@@ -1,7 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ForestryService} from "../../_services/forestry.service";
-import {Forestry} from "../../_interfaces/Forestry";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Forestry} from '../../_interfaces/Forestry';
+import {IDeleteForestry, IListForetries} from '../../_interfaces/forestry-service';
+import {ForestryService} from '../../_services/forestry.service';
 
 @Component({
   selector: 'app-forestry-list',
@@ -18,31 +19,38 @@ export class ForestryListComponent implements OnInit {
   targetForestryName = '';
   forestryNameNgModel = '';
 
-  constructor(private forestryService: ForestryService, private modalService: NgbModal) {
+  iForestryService: IDeleteForestry & IListForetries;
+
+  constructor(private forestryService: ForestryService,
+              private modalService: NgbModal) {
+    this.iForestryService = forestryService;
   }
 
   ngOnInit(): void {
-    this.loadForestries()
+    this.loadForestries();
   }
 
-  openDeleteModal(targetForestry: Forestry) {
+  openDeleteModal(targetForestry: Forestry): void {
     this.targetForestryName = targetForestry.name;
 
     this.modalService.open(this.deleteModal, {centered: true})
-    .result.then(() => {
-      if (this.forestryNameNgModel === this.targetForestryName)
-        this.forestryService.deleteForestry(targetForestry.forestry_id).subscribe(forestries => this.forestries = forestries);
+      .result.then(() => {
+      if (this.forestryNameNgModel === this.targetForestryName) {
+        this.iForestryService.deleteForestry(targetForestry.forestry_id).subscribe(() => {
+          this.loadForestries();
+        });
+      }
     }, (reason) => {
-      console.log(reason)
-    })
+      console.log(reason);
+    });
 
     this.forestryNameNgModel = '';
   }
 
-  loadForestries() {
-    this.forestryService.getForestries().subscribe(
+  loadForestries(): void {
+    this.iForestryService.getForestries().subscribe(
       forestries => this.forestries = forestries,
-      () => this.modalService.open(this.errorModal).result.then(() => this.loadForestries())
+      () => this.modalService.open(this.errorModal).result.then(() => this.loadForestries()),
     );
   }
 }

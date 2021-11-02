@@ -17,21 +17,22 @@
       </div>
 
       <label for="forest_district_name">Nadleśnictwo</label>
-      <select name="forest_district_name" id="forest_district_name" class="form-control" formControlName="forest_district_name">
+      <select name="forest_district_name" id="forest_district_name" class="form-control"
+              formControlName="forestry_district_id">
         <option selected="" value=""></option>
-        <option [ngValue]="d" *ngFor="let d of forestryService.forestDistricts">
-          {{d}}
+        <option [ngValue]="d.id" *ngFor="let d of forestryService.forestDistricts">
+          {{d.name}}
         </option>
       </select>
-      <div *ngIf="submitted && form.forest_district_name.invalid" class="alert alert-danger">
-        <div *ngIf="form.forest_district_name.errors?.required">Uzupełnij pole</div>
+      <div *ngIf="submitted && form.forestry_district_id.invalid" class="alert alert-danger">
+        <div *ngIf="form.forestry_district_id.errors?.required">Uzupełnij pole</div>
       </div>
 
       <label for="forester">Leśniczy</label>
       <select name="forester" id="forester" class="form-control" formControlName="forester">
         <option selected="" value=""></option>
-        <option [ngValue]="c" *ngFor="let c of forestryService.foresters">
-          {{c}}
+        <option [ngValue]="forester.employee_id" *ngFor="let forester of forestryService.foresters">
+          {{forester.first_name}} {{forester.last_name}}
         </option>
       </select>
       <div *ngIf="submitted && form.forester.invalid" class="alert alert-danger">
