@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Forestry} from "../_interfaces/Forestry";
 import {Observable, of} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +38,7 @@ export class ForestryService {
   foresters: any = ['Damian', 'Szymon', 'Sebastian', 'Bartłomiej'];
   forestDistricts: any = ['Nadleśnictwo 1', 'Nadleśnictwo 2', 'Nadleśnictwo 3'];
 
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   getForestries(): Observable<Forestry[]> {
@@ -49,18 +50,18 @@ export class ForestryService {
     return of(this.forestries);
   }
 
-  editForestry(forestry: Forestry): Observable<Forestry>  {
+  editForestry(forestry: Forestry): Observable<Forestry> {
     const idx = this.forestries.findIndex((obj => obj.forestry_id == forestry.forestry_id));
     this.forestries[idx] = forestry;
     return of(forestry);
   }
 
-  createForestry(forestry: Forestry): Observable<Forestry>  {
+  createForestry(forestry: Forestry): Observable<Forestry> {
     this.forestries.push(forestry);
     return of(forestry);
   }
 
-  getById(id: number): Observable<Forestry>{
+  getById(id: number): Observable<Forestry> {
     const forestry = this.forestries.find(x => x.forestry_id == id);
     return of(forestry);
   }
