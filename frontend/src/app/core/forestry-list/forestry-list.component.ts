@@ -12,6 +12,9 @@ export class ForestryListComponent implements OnInit {
 
   forestries: Forestry[];
 
+  targetForestryName = '';
+  forestryNameNgModel = '';
+
   constructor(private forestryService: ForestryService, private modalService: NgbModal) {
   }
 
@@ -19,11 +22,17 @@ export class ForestryListComponent implements OnInit {
     this.forestryService.getForestries().subscribe(forestries => this.forestries = forestries);
   }
 
-  openDeleteModal(content, forestry: Forestry) {
+  openDeleteModal(content, targetForestry: Forestry) {
+    this.targetForestryName = targetForestry.name;
+
     this.modalService.open(content, {centered: true})
-    .result.then(result => {
-      if(result === forestry.name)
-        this.forestryService.deleteForestry(forestry.forestry_id).subscribe(forestries => this.forestries = forestries);
-    }, () => {})
+    .result.then(() => {
+      if (this.forestryNameNgModel === this.targetForestryName)
+        this.forestryService.deleteForestry(targetForestry.forestry_id).subscribe(forestries => this.forestries = forestries);
+    }, (reason) => {
+      console.log(reason)
+    })
+
+    this.forestryNameNgModel = '';
   }
 }

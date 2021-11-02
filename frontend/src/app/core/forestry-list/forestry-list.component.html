@@ -17,14 +17,14 @@
     <td>{{forestry.area}} ha</td>
     <td class="text-center">
       <button class="btn btn-outline-danger mx-1" (click)="openDeleteModal(content, forestry)">🗑️</button>
-      <button class="btn btn-outline-primary mx-1" routerLink="/form/{{forestry.forestry_id}}" >✏️</button>
+      <button class="btn btn-outline-primary mx-1" routerLink="/form/{{forestry.forestry_id}}">✏️</button>
       <button class="btn btn-outline-success mx-1">🗺️</button>
     </td>
   </tr>
   </tbody>
 </table>
 
-<button class="btn btn-outline-primary mx-1" routerLink="/form" >Dodaj leśnictwo</button>
+<button class="btn btn-outline-primary mx-1" routerLink="/form">Dodaj leśnictwo</button>
 
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -35,10 +35,16 @@
   </div>
   <div class="modal-body">
     <p>Przepisz nazwę leśnictwa, aby kontynuować.</p>
-    <input type="text" class="form-control" #forestryName>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (forestryNameNgModel !== targetForestryName)}"
+           [(ngModel)]="forestryNameNgModel">
+    <div class="invalid-feedback">
+      Podano niepoprawną nazwę leśnictwa
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Anuluj</button>
-    <button type="button" class="btn btn-danger" (click)="modal.close(forestryName.value)">Usuń</button>
+    <button type="button" class="btn btn-danger" [disabled]="forestryNameNgModel === '' ||
+    forestryNameNgModel !== targetForestryName" (click)="modal.close()">Usuń
+    </button>
   </div>
 </ng-template>
