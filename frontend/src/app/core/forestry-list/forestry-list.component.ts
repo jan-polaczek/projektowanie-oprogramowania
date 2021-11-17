@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Forestry} from '../../_interfaces/Forestry';
-import {IDeleteForestry, IListForetries} from '../../_interfaces/forestry-service';
+import {IForestryList} from '../../_interfaces/forestry-service';
 import {ForestryService} from '../../_services/forestry.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class ForestryListComponent implements OnInit {
   targetForestryName = '';
   forestryNameNgModel = '';
 
-  iForestryService: IDeleteForestry & IListForetries;
+  iForestryService: IForestryList;
 
   constructor(private forestryService: ForestryService,
               private modalService: NgbModal) {

@@ -4,12 +4,12 @@ import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Employee} from '../_interfaces/Employee';
 import {Forestry, ForestryAddEditRequest} from '../_interfaces/Forestry';
-import {ICreateEditForestry, IDeleteForestry, IGetForestry, IListForetries} from '../_interfaces/forestry-service';
+import {IForestryForm, IForestryList} from '../_interfaces/forestry-service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ForestryService implements IDeleteForestry, IListForetries, ICreateEditForestry, IGetForestry {
+export class ForestryService implements IForestryList, IForestryForm {
 
   foresters: Employee[] = [
     {

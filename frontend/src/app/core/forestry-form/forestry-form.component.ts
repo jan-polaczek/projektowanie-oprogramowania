@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {first} from 'rxjs/operators';
 import {Forestry} from '../../_interfaces/Forestry';
-import {ICreateEditForestry, IGetForestry} from '../../_interfaces/forestry-service';
+import {IForestryForm} from '../../_interfaces/forestry-service';
 import {ForestryService} from '../../_services/forestry.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class ForestryFormComponent implements OnInit {
   id!: number;
   isAddMode!: boolean;
   registrationForm: FormGroup;
-  iForestryService: ICreateEditForestry & IGetForestry;
+  iForestryService: IForestryForm;
 
   constructor(public forestryService: ForestryService,
               private route: ActivatedRoute,
