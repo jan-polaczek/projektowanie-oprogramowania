@@ -1,0 +1,35 @@
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">ID czujnika</th>
+    <th scope="col">Typ czujnika</th>
+    <th scope="col">Model</th>
+    <th scope="col">Dane</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let sensor of sensors">
+    <th scope="row" style="width: 120px">#{{sensor.id}}</th>
+    <td>{{sensor.type.name}}</td>
+    <td>{{sensor.name}}</td>
+    <td class="text-center">
+      <button class="btn btn-outline-primary mx-1" (click)="openDetails(sensor)">ℹ</button>
+      <button class="btn btn-outline-secondary mx-1" >📍</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<ng-template #errorModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Nie można było pobrać listy sensorów </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body text-center">
+    <button type="button" class="btn btn-outline-dark mx-3" (click)="modal.dismiss()">Anuluj</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close()">Spróbuj ponownie</button>
+  </div>
+</ng-template>

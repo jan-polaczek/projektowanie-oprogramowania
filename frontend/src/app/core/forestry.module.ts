@@ -3,8 +3,7 @@ import {NgModule} from '@angular/core';
 import {ForestryDetailsComponent} from './forestry-details/forestry-details.component';
 import {ForestryFormComponent} from './forestry-form/forestry-form.component';
 import {ForestryListComponent} from './forestry-list/forestry-list.component';
-import {NavbarComponent} from './navbar/navbar.component';
-import {RouterModule} from "@angular/router";
+import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
@@ -13,7 +12,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     ForestryListComponent,
     ForestryFormComponent,
     ForestryDetailsComponent,
-    NavbarComponent,
   ],
   imports: [
     CommonModule,
@@ -21,9 +19,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
   ],
-  exports: [
-    NavbarComponent
-  ]
+  exports: []
 })
 export class ForestryModule {
 }

@@ -1,0 +1,14 @@
+<div class="modal-header">
+  <h4 class="modal-title">Czujnik: {{sensor.type.name}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p>Aktualna wartość: {{value}} {{sensor.type.unit}}</p>
+  <p>Dzienna wartość minimana: {{valueMin}} {{sensor.type.unit}}</p>
+  <p>Dzienna wartość maksymalna: {{valueMax}} {{sensor.type.unit}}</p>
+  <div class="text-center">
+    <button type="button" class="btn btn-outline-dark mx-3" (click)="dismiss()">OK</button>
+  </div>
+</div>
