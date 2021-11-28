@@ -1,5 +1,7 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import * as L from 'leaflet';
+import {MapService} from "../../_services/map.service";
+import {Forestry} from "../../_interfaces/Forestry";
 
 @Component({
   selector: 'app-map',
@@ -9,16 +11,24 @@ import * as L from 'leaflet';
 export class MapComponent implements OnInit, AfterViewInit {
 
   @Input() height = 500;
+  @Input() forestry: Forestry
 
   private map;
+  private forestryShape;
 
-  constructor() { }
+  constructor(private mapService: MapService) {
+  }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
     this.initMap();
+
+    this.mapService.getMap(this.forestry).subscribe(forestryShape => {
+      this.forestryShape = forestryShape;
+      this.initShapeLayer();
+    })
   }
 
   private initMap(): void {
@@ -34,5 +44,20 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
 
     tiles.addTo(this.map);
+  }
+
+  private initShapeLayer() {
+    const shapeLayer = L.geoJSON(this.forestryShape, {
+      style: (feature) => ({
+        weight: 3,
+        opacity: 0.5,
+        color: '#008f68',
+        fillOpacity: 0.5,
+        fillColor: '#6DB65B'
+      })
+    });
+
+    this.map.addLayer(shapeLayer);
+    this.map.fitBounds(shapeLayer.getBounds());
   }
 }
