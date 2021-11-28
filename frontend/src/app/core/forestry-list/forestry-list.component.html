@@ -18,7 +18,7 @@
     <td class="text-center">
       <button class="btn btn-outline-danger mx-1" (click)="openDeleteModal(forestry)">🗑️</button>
       <button class="btn btn-outline-primary mx-1" [routerLink]="'/form/' + forestry.forestry_id">✏️</button>
-      <button class="btn btn-outline-success mx-1" [routerLink]="'/forestry/' + forestry.forestry_id">🗺️</button>
+      <button class="btn btn-outline-success mx-1" (click)="openDetails(forestry)">🗺️</button>
     </td>
   </tr>
   </tbody>

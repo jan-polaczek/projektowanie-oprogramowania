@@ -3,6 +3,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Forestry} from '../../_interfaces/Forestry';
 import {IForestryList} from '../../_interfaces/forestry-service';
 import {ForestryService} from '../../_services/forestry.service';
+import {ForestryDetailsComponent} from "../forestry-details/forestry-details.component";
 
 @Component({
   selector: 'app-forestry-list',
@@ -34,7 +35,7 @@ export class ForestryListComponent implements OnInit {
     this.targetForestryName = targetForestry.name;
 
     this.modalService.open(this.deleteModal, {centered: true})
-      .result.then(() => {
+    .result.then(() => {
       if (this.forestryNameNgModel === this.targetForestryName) {
         this.iForestryService.deleteForestry(targetForestry.forestry_id).subscribe(() => {
           this.loadForestries();
@@ -52,5 +53,17 @@ export class ForestryListComponent implements OnInit {
       forestries => this.forestries = forestries,
       () => this.modalService.open(this.errorModal).result.then(() => this.loadForestries()),
     );
+  }
+
+  openDetails(forestry: Forestry) {
+    const modalRef = this.modalService.open(ForestryDetailsComponent,
+      {
+        size: "xl"
+      });
+
+    modalRef.componentInstance.forestry = forestry;
+    modalRef.result.then((result) => {
+    }, (reason) => {
+    });
   }
 }
