@@ -58,3 +58,11 @@ class SensorData(models.Model):
     date = models.DateTimeField()
     value = models.CharField(max_length=48)
  
+class NotificationType(models.Model):
+
+    msg = models.CharField(max_length=48)
+
+class Notification(models.Model):
+
+    sensor_data_id = models.ForeignKey(SensorData, on_delete=models.CASCADE)
+    type = models.ForeignKey(NotificationType, on_delete=models.CASCADE)
