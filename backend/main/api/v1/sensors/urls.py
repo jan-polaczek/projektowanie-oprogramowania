@@ -1,11 +1,13 @@
 from django.urls import path
 from django.conf.urls import url
 from .views import (
-    SensorsAPIVIew,
-    SensorAPIView
+    SensorsAPIView,
+    SensorAPIView,
+    SensorReportsAPIView
 )
 
 urlpatterns = [
-    path("api/v1/sensors/", SensorsAPIVIew.as_view(), name="api_v1_sensors"),
+    path("api/v1/sensors/", SensorsAPIView.as_view(), name="api_v1_sensors"),
     path("api/v1/sensor/<int:sensor_id>", SensorAPIView.as_view(), name="api_v1_sensor"),
+    path("api/v1/sensor/data", SensorReportsAPIView.as_view(), name="api_v1_sensor_data"),
 ]

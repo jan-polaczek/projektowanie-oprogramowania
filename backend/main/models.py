@@ -38,7 +38,7 @@ class SensorType(models.Model):
 
 class Sensor(models.Model):
 
-    forestry_id = models.ForeignKey(Forestry, on_delete=models.CASCADE)
+    forestry = models.ForeignKey(Forestry, on_delete=models.CASCADE)
     type = models.ForeignKey(SensorType, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=48)
@@ -53,7 +53,7 @@ class Sensor(models.Model):
 
 class SensorData(models.Model):
 
-    sensor_id = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
 
     date = models.DateTimeField()
     value = models.CharField(max_length=48)
