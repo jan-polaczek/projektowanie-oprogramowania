@@ -22,3 +22,39 @@ class Forestry(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+class SensorType(models.Model):
+
+    name = models.CharField(max_length=48)
+    unit = models.CharField(max_length=12)
+    max_std_value = models.CharField(max_length=48)
+    min_std_value = models.CharField(max_length=48)
+
+    def __str__(self):
+        return self.name
+
+
+class Sensor(models.Model):
+
+    forestry_id = models.ForeignKey(Forestry, on_delete=models.CASCADE)
+    type = models.ForeignKey(SensorType, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=48)
+    x = models.CharField(max_length=24)
+    y = models.CharField(max_length=24)
+    z = models.CharField(max_length=24)
+
+    def __str__(self):
+        return self.name
+
+
+
+class SensorData(models.Model):
+
+    sensor_id = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+
+    date = models.DateTimeField()
+    value = models.CharField(max_length=48)
+ 
