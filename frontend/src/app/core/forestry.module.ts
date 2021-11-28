@@ -5,7 +5,7 @@ import {ForestryFormComponent} from './forestry-form/forestry-form.component';
 import {ForestryListComponent} from './forestry-list/forestry-list.component';
 import {RouterModule} from '@angular/router';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MapComponent} from "./map/map.component";
+import {ForestryMapComponent} from "./map/forestry-map.component";
 
 
 @NgModule({
@@ -13,7 +13,7 @@ import {MapComponent} from "./map/map.component";
     ForestryListComponent,
     ForestryFormComponent,
     ForestryDetailsComponent,
-    MapComponent,
+    ForestryMapComponent,
   ],
   imports: [
     CommonModule,

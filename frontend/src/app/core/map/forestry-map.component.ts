@@ -1,14 +1,14 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import * as L from 'leaflet';
-import {MapService} from "../../_services/map.service";
+import {ForestryMapService} from "../../_services/forestry-map.service";
 import {Forestry} from "../../_interfaces/Forestry";
 
 @Component({
   selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  templateUrl: './forestry-map.component.html',
+  styleUrls: ['./forestry-map.component.scss']
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class ForestryMapComponent implements OnInit, AfterViewInit {
 
   @Input() height = 500;
   @Input() forestry: Forestry
@@ -16,7 +16,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   private map;
   private forestryShape;
 
-  constructor(private mapService: MapService) {
+  constructor(private mapService: ForestryMapService) {
   }
 
   ngOnInit(): void {
@@ -25,7 +25,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
 
-    this.mapService.getMap(this.forestry).subscribe(forestryShape => {
+    this.mapService.getMapData(this.forestry).subscribe(forestryShape => {
       this.forestryShape = forestryShape;
       this.initShapeLayer();
     })
