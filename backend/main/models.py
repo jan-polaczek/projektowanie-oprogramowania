@@ -57,6 +57,10 @@ class SensorData(models.Model):
 
     date = models.DateTimeField()
     value = models.CharField(max_length=48)
+
+class Email(models.Model):
+
+    mail = models.CharField(max_length=48)
  
 class NotificationType(models.Model):
 

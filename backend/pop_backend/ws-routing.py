@@ -5,7 +5,7 @@ from main.api.v1.notifications.views import PushWebSocketNotification
 
 application = ProtocolTypeRouter({
     'websocket': URLRouter([
-        path('notifications', PushWebSocketNotification.as_asgi()),
+        path('notification', PushWebSocketNotification.as_asgi()),
     ]),
     # http handled by Django as usual
 })

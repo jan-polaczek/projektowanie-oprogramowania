@@ -3,15 +3,19 @@ from rest_framework import generics
 from djangochannelsrestframework.consumers import AsyncAPIConsumer
 from djangochannelsrestframework.decorators import action
 from djangochannelsrestframework.observer import observer
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import async_to_sync
 from django.core.paginator import Paginator, EmptyPage
 from django.dispatch.dispatcher import Signal
+
+from main.apps import MainConfig
+
+from .push_websocket_notification import PushWebSocketNotification
+from .send_mail_notification import send_mail_notification
 import json
 
 from main.models import Notification
 
 from .serializers import (
+    NotificationCreateRequestSerializer,
     NotificationListRequestSerializer,
     NotificationResponseSerializer
 )
@@ -20,7 +24,7 @@ class HistoricalNotificationsView(APIView):
     
     def get(self, request, format=None):
         req_serializer = NotificationListRequestSerializer(data=request.query_params)
-
+        
         if req_serializer.is_valid():
             paginator = Paginator(
                 Notification.objects.all().order_by('id'), 
@@ -33,6 +37,19 @@ class HistoricalNotificationsView(APIView):
             resp_serializer = NotificationResponseSerializer(page, many=True)
 
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+
+        return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request, format=None):
+        req_serializer = NotificationCreateRequestSerializer(data=request.data)
+
+        if req_serializer.is_valid():
+
+            new_notification = req_serializer.save()
+
+            res_serializer = NotificationResponseSerializer(instance=new_notification)
+
+            return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,29 +77,11 @@ class ManageHistoricalNotifications(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
-class PushWebSocketNotification(WebsocketConsumer):
-    
-    def connect(self):
-        print('ACCEPT')
-        async_to_sync(self.channel_layer.group_add)("notify", self.channel_name)
-        self.accept()
+class SensorNotification():
 
-    def receive(self, text_data):
-        data = json.loads(text_data)
-        message = data['message']
-        async_to_sync(self.channel_layer.group_send)(
-            "notify",
-            {
-                "type": "send_notification_message",
-                "message": message,
-            },
-        )
+    def send_notification(self, notification, data):
+        notificationToSave = Notification(sensor_data_id=data.id, type=data.type)
+        notificationToSave.save()
 
-    def send_notification_message(self, event):
-        message = event['message']
-        self.send(text_data=json.dumps({
-            'message': message
-        }))
-
-    def disconnect(self, event):
-        async_to_sync(self.channel_layer.group_discard)("notify", self.channel_name)
+        send_mail_notification(notification)
+        PushWebSocketNotification.receive({"message": data})
