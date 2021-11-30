@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'corsheaders',
+    'channels',
     'main',
     'rest_framework',
 ]
@@ -63,6 +64,25 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pop_backend.wsgi.application'
+
+# ws conf
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    },
+}
+
+ASGI_APPLICATION = 'pop_backend.ws-routing.application'
 
 
 # Password validation
