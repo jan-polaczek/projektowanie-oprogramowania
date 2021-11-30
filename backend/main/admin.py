@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Forestry, ForestryDistrict
+from main.models import Forestry, ForestryDistrict, ForestryMap
 
 # Register your models here.
 class ForestryAdmin(admin.ModelAdmin):
@@ -43,3 +43,21 @@ class ForestryDistrictAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(ForestryDistrict, ForestryDistrictAdmin)
+
+
+class ForestryMapAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "forestry",
+        "map_geojson"
+    )
+
+    list_display_links = (
+        "forestry",
+    )
+
+    search_fields = (
+        "forestry",
+    )
+
+admin.site.register(ForestryMap, ForestryMapAdmin)

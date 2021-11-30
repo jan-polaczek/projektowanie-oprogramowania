@@ -5,4 +5,4 @@ djangorestframework-simplejwt==5.0.0
 django-cors-headers==3.10.0
 drf-yasg
 psycopg2
-djangochannelsrestframework==0.3.0 
+djangochannelsrestframework==0.3.0

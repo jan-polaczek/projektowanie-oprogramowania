@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
-from main.models import Forestry, ForestryDistrict
+from main.models import Forestry, ForestryDistrict, ForestryMap
 from django.utils.translation import gettext as _
 
 class MySerializer(serializers.Serializer):
@@ -96,3 +96,35 @@ class ForestryListRequestSerializer(serializers.Serializer):
         return data
 
         
+class ForestryMapGeojsonResponseSerializer(serializers.ModelSerializer):
+    forestry_id = serializers.SerializerMethodField()
+    def get_forestry_id(self, obj):
+        return obj.forestry_id
+
+    class Meta:
+        model = ForestryMap
+        fields = (
+            "forestry_id",
+            "map_geojson"
+        )
+        extra_kwargs = {
+            "map_geojson": {
+                "label":"Map geojson",
+                "help_text":"Geojson data stored in the DB. NOTICE: The format might be invalid, make sure your code handles this case"
+            }
+        }
+
+
+class ForestryMapGeojsonPutRequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForestryMap
+        fields = (
+            "map_geojson",
+        )
+        extra_kwargs = {
+            "map_geojson": {
+                "label":"Map geojson",
+                "help_text":"Geojson data assigned to forestry. NOTICE: API does not validate the geojson format!"
+            }
+        }

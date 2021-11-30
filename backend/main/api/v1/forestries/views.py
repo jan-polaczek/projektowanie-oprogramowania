@@ -1,8 +1,10 @@
+from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView, Response, Http404, status
 from rest_framework import generics
 from django.core.paginator import Paginator, EmptyPage
+from drf_yasg import openapi
 
-from main.models import Forestry
+from main.models import Forestry, ForestryMap
 
 from .serializers import (
     ForestryModelSerializer,
@@ -10,7 +12,9 @@ from .serializers import (
     ForestryCreateRequestSerializer,
     ForestryUpdateRequestSerializer,
     ForestryResponseSerializer,
-    ForestryListRequestSerializer
+    ForestryListRequestSerializer,
+    ForestryMapGeojsonResponseSerializer,
+    ForestryMapGeojsonPutRequestSerializer,
 )
 
 from drf_yasg.utils import swagger_auto_schema
@@ -140,3 +144,86 @@ class ForestriesAPIVIew(APIView):
             return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForestryMapGeojsonAPIView(generics.GenericAPIView):
+
+    @swagger_auto_schema(
+        operation_summary="Retrieves forestry map in geojson format",
+        operation_description="The returned format is entirely unverified in terms of geojson format (at least for now, since it requires external software)",
+        responses={
+            status.HTTP_200_OK: ForestryMapGeojsonResponseSerializer
+        }
+    )
+    def get(self, request, forestry_id:int, format=None):
+        
+        obj = None
+        try:
+            obj = ForestryMap.objects.get(forestry_id=forestry_id)
+        except ForestryMap.DoesNotExist:
+            raise Http404()
+
+        response = ForestryMapGeojsonResponseSerializer(instance=obj)
+        return Response(data=response.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Assigns/Updates geojson data of forestry",
+        operation_description="If chosen forestry already has a geojson data assigned, the API will replace it with incoming data. If no geojson data is assigned, API will assign it.",
+        request_body=ForestryMapGeojsonPutRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestryMapGeojsonResponseSerializer
+        }
+    )
+    def put(self, request, forestry_id:int, format=None):
+        forestry = None
+        try:
+            forestry = Forestry.objects.select_related("forestry_map").get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        if not hasattr(forestry, "forestry_map"):
+            obj = ForestryMap(forestry=forestry)
+        else:
+            obj = forestry.forestry_map
+
+        serializer = ForestryMapGeojsonPutRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            obj.map_geojson = data["map_geojson"]
+
+            try:
+                obj.save()
+            except Exception as e:
+                return Response(data={
+                    "details": "An unknown server error has occured"
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            response = ForestryMapGeojsonResponseSerializer(instance=obj)
+            return Response(data=response.data, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="Clears geojson data from forestry if such data exists",
+        operation_description="If geojson data is found on the requested object, it is cleared. Otherwise nothing is done and status 204 is returned"
+    )
+    def delete(self, request, forestry_id:int, format=None):
+        forestry = None
+        try:
+            forestry = Forestry.objects.select_related("forestry_map").get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        if not hasattr(forestry, "forestry_map"):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            obj = forestry.forestry_map
+
+        try:
+            obj.delete()
+        except Exception as e:
+            return Response(data={
+                "details": "An unrecognized server error has occured"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

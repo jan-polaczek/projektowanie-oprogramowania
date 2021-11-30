@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 class ForestryDistrict(models.Model):
@@ -70,3 +71,10 @@ class Notification(models.Model):
 
     sensor_data_id = models.ForeignKey(SensorData, on_delete=models.CASCADE)
     type = models.ForeignKey(NotificationType, on_delete=models.CASCADE)
+
+
+
+class ForestryMap(models.Model):
+
+    forestry = models.OneToOneField(Forestry, on_delete=models.CASCADE, primary_key=True, verbose_name=_("Forestry"), related_name="forestry_map")
+    map_geojson = models.JSONField(verbose_name=_("Map_geojson"), null=False, blank=False)
