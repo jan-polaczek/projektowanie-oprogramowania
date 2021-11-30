@@ -1,0 +1,48 @@
+<div class="modal-header" style="float: left;margin-right:280px">
+  <h4 class="modal-title">Ogólne</h4>
+</div>
+
+
+<div class="modal-header">
+  <h4 class="modal-title">Dane o drzewostanie</h4>
+</div>
+
+<div style="float: left;margin-right:120px">
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Powierzchnia</th>
+    <th scope="col">{{mapDetails.area}} ha</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td scope="col">Liczba czujników dymu</td>
+    <td>{{mapDetails.smokeSensorCount}}</td>
+  </tr>
+  <tr>
+    <td scope="col">Liczba something</td>
+    <td>{{mapDetails.countSomething}}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<div style="float: left">
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Gatunek</th>
+    <th scope="col">Liczebność</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let tree of treeStandDetails">
+    <td>{{tree.species}}</td>
+    <td>{{tree.count}}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
+

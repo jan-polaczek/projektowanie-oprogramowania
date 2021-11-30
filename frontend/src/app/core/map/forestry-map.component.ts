@@ -11,7 +11,7 @@ import {Forestry} from "../../_interfaces/Forestry";
 export class ForestryMapComponent implements OnInit, AfterViewInit {
 
   @Input() height = 500;
-  @Input() forestry: Forestry
+  @Input() forestry: Forestry;
 
   private map;
   private forestryShape;

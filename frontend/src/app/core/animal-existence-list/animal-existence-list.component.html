@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h4 class="modal-title">Dane o bytowaniu zwierząt</h4>
+</div>
+
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Gatunek</th>
+    <th scope="col">Liczebność</th>
+    <th scope="col">Data</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let animaExistence of animalExistences">
+    <td>{{animaExistence.species}}</td>
+    <td>{{animaExistence.count}}</td>
+    <td>{{animaExistence.last_date | date :'yyyy-MM-dd'}}</td>
+  </tr>
+  </tbody>
+</table>

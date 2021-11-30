@@ -15,7 +15,15 @@ export class ForestryListComponent implements OnInit {
   @ViewChild('deleteModal') deleteModal: any;
   @ViewChild('errorModal') errorModal: any;
 
-  forestries: Forestry[];
+
+  forest1: Forestry = { forestry_id: 1,
+    forestry_district_id: 1,
+    forestry_district_name: '12321321',
+    forester: 1,
+    name: 'SIEMA',
+    area: 1234};
+
+  forestries: Forestry[] = [this.forest1];
 
   targetForestryName = '';
   forestryNameNgModel = '';
@@ -28,7 +36,7 @@ export class ForestryListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadForestries();
+
   }
 
   openDeleteModal(targetForestry: Forestry): void {
