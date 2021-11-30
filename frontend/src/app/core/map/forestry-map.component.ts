@@ -49,11 +49,11 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   private initShapeLayer() {
     const shapeLayer = L.geoJSON(this.forestryShape, {
       style: (feature) => ({
-        weight: 3,
-        opacity: 0.5,
-        color: '#008f68',
+        weight: 4,
+        opacity: 1,
+        color: '#000000',
         fillOpacity: 0.5,
-        fillColor: '#6DB65B'
+        fillColor: '#54c538'
       })
     });
 
