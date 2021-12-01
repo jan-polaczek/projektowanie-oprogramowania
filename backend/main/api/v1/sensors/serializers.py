@@ -54,10 +54,13 @@ class SensorResponseSerializer(serializers.ModelSerializer):
         return obj.id
 
     def get_forestry_id(self, obj):
-        return obj.forestry_id.id
+        return obj.forestry_id
 
     def get_type(self, obj):
-        return obj.type.name
+        return {
+            "name": obj.type.name,
+            "unit": obj.type.unit,
+        }
 
     class Meta:
         model = Sensor
