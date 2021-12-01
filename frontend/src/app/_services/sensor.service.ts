@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {Sensor, SensorData} from '../_interfaces/Sensor';
 import {ISensorReports, ISensorList} from '../_interfaces/sensor-service';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
@@ -52,8 +53,8 @@ export class SensorService implements ISensorReports, ISensorList {
   }
 
   getSensors(): Observable<Sensor[]> {
-    // return this.http.get<Sensor[]>(`${environment.apiUrl}sensors`);
-    return of(this.sensors);
+    return this.http.get<Sensor[]>(`${environment.apiUrl}sensors/`);
+    //return of(this.sensors);
   }
 
   getSensorDataById(id: number, from: Date, to: Date): Observable<SensorData[]> {
