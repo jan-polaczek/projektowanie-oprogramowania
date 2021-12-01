@@ -30,22 +30,19 @@ export class SensorService implements ISensorReports, ISensorList {
 
   sensorData: SensorData[] = [
     {
-      id: 1,
       sensor_id: 1,
       value: 5,
-      datetime: new Date(Date.now())
+      date: new Date(Date.now())
     },
     {
-      id: 2,
       sensor_id: 1,
       value: 10,
-      datetime: new Date(Date.now())
+      date: new Date(Date.now())
     },
     {
-      id: 3,
       sensor_id: 1,
       value: 15,
-      datetime: new Date(Date.now())
+      date: new Date(Date.now())
     },
   ];
 
@@ -58,7 +55,7 @@ export class SensorService implements ISensorReports, ISensorList {
   }
 
   getSensorDataById(id: number, from: Date, to: Date): Observable<SensorData[]> {
-    // return this.http.get<Sensor>(`${environment.apiUrl}sensor/${id}`);
-    return of(this.sensorData);
+    return this.http.post<SensorData[]>(`${environment.apiUrl}sensor/data`, {sensor_id: id, date_from: from, date_to: to});
+    //return of(this.sensorData);
   }
 }
