@@ -1,12 +1,13 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
-import {ForestryMapService} from "../../_services/forestry-map.service";
-import {Forestry} from "../../_interfaces/Forestry";
+import {Forestry} from '../../_interfaces/Forestry';
+import {ForestryMapService} from '../../_services/forestry-map.service';
 
 @Component({
   selector: 'app-map',
   templateUrl: './forestry-map.component.html',
-  styleUrls: ['./forestry-map.component.scss']
+  styleUrls: ['./forestry-map.component.scss'],
 })
 export class ForestryMapComponent implements OnInit, AfterViewInit {
 
@@ -16,7 +17,8 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   private map;
   private forestryShape;
 
-  constructor(private mapService: ForestryMapService) {
+  constructor(private mapService: ForestryMapService,
+              public activeModal: NgbActiveModal) {
   }
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
     this.mapService.getMapData(this.forestry).subscribe(forestryShape => {
       this.forestryShape = forestryShape;
       this.initShapeLayer();
-    })
+    });
   }
 
   private initMap(): void {
@@ -46,18 +48,22 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
     tiles.addTo(this.map);
   }
 
-  private initShapeLayer() {
+  private initShapeLayer(): void {
     const shapeLayer = L.geoJSON(this.forestryShape, {
       style: (feature) => ({
         weight: 4,
         opacity: 1,
         color: '#000000',
         fillOpacity: 0.5,
-        fillColor: '#54c538'
-      })
+        fillColor: '#54c538',
+      }),
     });
 
     this.map.addLayer(shapeLayer);
     this.map.fitBounds(shapeLayer.getBounds());
+  }
+
+  close(): void {
+    this.activeModal.close();
   }
 }
