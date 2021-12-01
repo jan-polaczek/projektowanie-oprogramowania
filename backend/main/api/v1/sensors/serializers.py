@@ -65,6 +65,7 @@ class SensorResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sensor
         fields = [
+            "id",
             "forestry_id",
             "type",
             "name",
