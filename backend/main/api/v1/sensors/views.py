@@ -103,12 +103,12 @@ class SensorsAPIView(APIView):
 
 class SensorReportsAPIView(APIView):
 
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         req_serializer = SensorDataParamsListRequestSerializer(data=request.query_params)
         try:
             res_json = json.loads(request.body.decode('utf-8'))
-            res_json["date_from"] = datetime.strptime(res_json["date_from"], '%Y/%m/%d %H:%M:%S')
-            res_json["date_to"] = datetime.strptime(res_json["date_to"], '%Y/%m/%d %H:%M:%S')
+            res_json["date_from"] = datetime.strptime(res_json["date_from"], '%Y-%m-%dT%H:%M:%S.%f%z')
+            res_json["date_to"] = datetime.strptime(res_json["date_to"], '%Y-%m-%dT%H:%M:%S.%f%z')
         except (KeyError, ValueError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         req_serializer_body = SensorDataBodyListRequestSerializer(data=res_json)
@@ -134,15 +134,15 @@ class SensorReportsAPIView(APIView):
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def post(self, request, format=None):
-        req_serializer = SensorDataCreateRequestSerializer(data=request.data)
-
-        if req_serializer.is_valid():
-
-            new_sensor_data = req_serializer.save()
-
-            res_serializer = SensorDataResponseSerializer(instance=new_sensor_data)
-
-            return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request, format=None):
+    #     req_serializer = SensorDataCreateRequestSerializer(data=request.data)
+    #
+    #     if req_serializer.is_valid():
+    #
+    #         new_sensor_data = req_serializer.save()
+    #
+    #         res_serializer = SensorDataResponseSerializer(instance=new_sensor_data)
+    #
+    #         return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
+    #
+    #     return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
