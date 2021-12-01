@@ -1,10 +1,11 @@
+from django.db.models.query_utils import Q
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView, Response, Http404, status
 from rest_framework import generics
 from django.core.paginator import Paginator, EmptyPage
 from drf_yasg import openapi
 
-from main.models import Forestry, ForestryMap
+from main.models import Forestry, ForestryMap, ForestryResource
 
 from .serializers import (
     ForestryModelSerializer,
@@ -15,6 +16,10 @@ from .serializers import (
     ForestryListRequestSerializer,
     ForestryMapGeojsonResponseSerializer,
     ForestryMapGeojsonPutRequestSerializer,
+    ForestryResourcesGetRequestSerializer,
+    ForestryResourcesPostRequestSerializer,
+    ForestryResourcePatchRequestSerializer,
+    ForestryResourceResponseSerializer
 )
 
 from drf_yasg.utils import swagger_auto_schema
@@ -224,6 +229,166 @@ class ForestryMapGeojsonAPIView(generics.GenericAPIView):
         except Exception as e:
             return Response(data={
                 "details": "An unrecognized server error has occured"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class ForestryResourcesAPIView(generics.GenericAPIView):
+
+    @swagger_auto_schema(
+        operation_summary="Lists resources assigned to forestry",
+        operation_description="You can filter types of resources in the request, as well as specify a search_text to filter objects by name",
+        query_serializer=ForestryResourcesGetRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestryResponseSerializer(many=True)
+        }
+    )
+    def get(self, request, forestry_id:int, format=None):
+        obj = None
+        try:
+            obj = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestryResourcesGetRequestSerializer(data=request.query_params)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            filter_q = []
+            if data["type_filter"] is not None:
+                filter_q.append(Q(
+                    type__in=data["type_filter"]
+                ))
+            if data["search_text"] is not None:
+                filter_q.append(Q(
+                    name__icontains=data["search_text"]
+                ))
+
+            qs = ForestryResource.objects.filter(
+                *filter_q,
+                forestry=obj
+            )
+
+            response = ForestryResourceResponseSerializer(instance=qs, many=True)
+            return Response(data=response.data, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        
+    @swagger_auto_schema(
+        operation_summary="Creates new instance of a resource assigned to a forestry",
+        request_body=ForestryResourcesPostRequestSerializer,
+        responses={
+            status.HTTP_201_CREATED: ForestryResourceResponseSerializer
+        }
+    )
+    def post(self, request, forestry_id:int, format=None):
+        obj = None
+        try:
+            obj = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestryResourcesPostRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            instance = ForestryResource(
+                forestry=obj,
+                **data
+            )
+
+            try:
+                instance.save()
+            except Exception as e:
+                return Response(data={
+                    "details": "An unknown internal server error has occured"
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            response = ForestryResourceResponseSerializer(instance=instance)
+            return Response(data=response.data, status=status.HTTP_201_CREATED)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForestryResourceAPIView(generics.GenericAPIView):
+
+    @swagger_auto_schema(
+        operation_summary="Retrieve single resource",
+        operation_description="Retrieves a single resource data if it exists and is assigned to requested forestry",
+        responses={
+            status.HTTP_200_OK: ForestryResourceResponseSerializer
+        }
+    )
+    def get(self, request, forestry_id:int, resource_id:int, format=None):
+        obj = None
+        try:
+            obj = ForestryResource.objects.get(
+                forestry_id=forestry_id,
+                id=resource_id
+            )
+        except ForestryResource.DoesNotExist:
+            raise Http404()
+
+        response = ForestryResourceResponseSerializer(instance=obj)
+        return Response(data=response.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Updates a single resource",
+        operation_description="Updates a resource, if requested resource exists and is assigned to requested forestry",
+        request_body=ForestryResourcePatchRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestryResourceResponseSerializer
+        }
+    )
+    def patch(self, request, forestry_id:int, resource_id:int, format=None):
+        obj = None
+        try:
+            obj = ForestryResource.objects.get(
+                forestry_id=forestry_id,
+                id=resource_id
+            )
+        except ForestryResource.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestryResourcePatchRequestSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            data = serializer.validated_data
+
+            for (key, value) in data.items():
+                setattr(obj, key, value)
+
+            try:
+                obj.save()
+            except Exception as e:
+                return Response(data={
+                    "details": "An unknown internal server error has occured"
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            response = ForestryResourceResponseSerializer(instance=obj)
+            return Response(data=response.data, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="Removes a resource",
+        operation_description="Removes a single resource if it exists and is assigned to the requested frorestry"
+    )
+    def delete(self, request, forestry_id:int, resource_id:int, format=None):
+        obj = None
+        try:
+            obj = ForestryResource.objects.get(
+                forestry_id=forestry_id,
+                id=resource_id
+            )
+        except ForestryResource.DoesNotExist:
+            raise Http404()
+
+        try:
+            obj.delete()
+        except Exception as e:
+            return Response(data={
+                "details": "An unknown internal server error has occured"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(status=status.HTTP_204_NO_CONTENT)

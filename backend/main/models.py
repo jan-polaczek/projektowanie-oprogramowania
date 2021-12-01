@@ -78,3 +78,16 @@ class ForestryMap(models.Model):
 
     forestry = models.OneToOneField(Forestry, on_delete=models.CASCADE, primary_key=True, verbose_name=_("Forestry"), related_name="forestry_map")
     map_geojson = models.JSONField(verbose_name=_("Map_geojson"), null=False, blank=False)
+
+
+class ForestryResource(models.Model):
+
+    class ResourceType(models.IntegerChoices):
+        STANDARD_RESOURCE = (1, _("Standard_resource"))
+        ANIMAL = (2, _("Animal"))
+
+    forestry = models.ForeignKey(Forestry, on_delete=models.CASCADE, verbose_name=_("Forestry"), null=False, blank=False, related_name="forestry_resources")
+    type = models.SmallIntegerField(choices=ResourceType.choices, blank=False, null=False, default=ResourceType.STANDARD_RESOURCE, verbose_name=_("Resource_type"))
+    name = models.CharField(max_length=128, blank=False, null=False, verbose_name=_("Resource_name"))
+    quantity = models.FloatField(verbose_name=_("Resource_quantity"), blank=False, null=False)
+    quantity_unit = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name=_("Resource_quantity_unit"))

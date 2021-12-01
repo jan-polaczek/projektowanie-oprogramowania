@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
-from main.models import Forestry, ForestryDistrict, ForestryMap
+from main.models import Forestry, ForestryDistrict, ForestryMap, ForestryResource
 from django.utils.translation import gettext as _
 
 class MySerializer(serializers.Serializer):
@@ -128,3 +128,96 @@ class ForestryMapGeojsonPutRequestSerializer(serializers.ModelSerializer):
                 "help_text":"Geojson data assigned to forestry. NOTICE: API does not validate the geojson format!"
             }
         }
+
+
+class ForestryResourcesGetRequestSerializer(serializers.Serializer):
+
+    type_filter = serializers.CharField(max_length=128, label="Allows to filter resource types", help_text="Put the resource types you want divided by a comma (','). You can either put numerical values (1, 2) or text equivalents (STANDARD_RESOURCE, ANIMAL)", allow_null=True, required=False, default=None)
+
+    search_text = serializers.CharField(max_length=256, label="Filters resources by name", help_text="Performs case-insensitive search by resources names. Omitted if null", allow_null=True, required=False, default=None)
+
+    def validate(self, data):
+        data = super().validate(data)
+
+        type_filter = data["type_filter"]
+        tmp_arr = []
+        if type_filter == "" or type_filter is None:
+            tmp_arr = None
+        else:
+            types_arr = type_filter.split(',')
+            for item in types_arr:
+                if item.isdigit():
+                    tmp_arr.append(int(item))
+
+                else:
+                    if item == "STANDARD_RESOURCE":
+                        tmp_arr.append(ForestryResource.ResourceType.STANDARD_RESOURCE)
+                    elif item == "ANIMAL":
+                        tmp_arr.append(ForestryResource.ResourceType.ANIMAL)
+                    else:
+                        raise serializers.ValidationError({
+                            "type_filter": ErrorDetail(
+                                "Unknown resource type: " + item,
+                                code="unknown_resource"
+                            )
+                        })
+            types_arr = tmp_arr
+
+        data["type_filter"] = tmp_arr
+
+        return data
+
+class ForestryResourceResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForestryResource
+        fields = (
+            "id",
+            "type",
+            "name",
+            "quantity",
+            "quantity_unit"
+        )
+
+
+class ForestryResourcesPostRequestSerializer(serializers.ModelSerializer):
+
+    def run_validation(self, data):
+        if data["type"] == "STANDARD_RESOURCE":
+            data["type"] = ForestryResource.ResourceType.STANDARD_RESOURCE
+        elif data["type"] == "ANIMAL":
+            data["type"] = ForestryResource.ResourceType.ANIMAL
+
+        data = super().run_validation(data)
+
+        return data
+
+    class Meta:
+        model = ForestryResource
+        fields = (
+            "type",
+            "name",
+            "quantity",
+            "quantity_unit"
+        )
+
+class ForestryResourcePatchRequestSerializer(serializers.ModelSerializer):
+
+    def run_validation(self, data):
+        if data["type"] == "STANDARD_RESOURCE":
+            data["type"] = ForestryResource.ResourceType.STANDARD_RESOURCE
+        elif data["type"] == "ANIMAL":
+            data["type"] = ForestryResource.ResourceType.ANIMAL
+
+        data = super().run_validation(data)
+
+        return data
+
+    class Meta:
+        model = ForestryResource
+        fields = (
+            "type",
+            "name",
+            "quantity",
+            "quantity_unit"
+        )
