@@ -54,7 +54,7 @@ class Sensor(models.Model):
 
 class SensorData(models.Model):
 
-    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name="sensor_measurements")
 
     date = models.DateTimeField()
     value = models.CharField(max_length=48)

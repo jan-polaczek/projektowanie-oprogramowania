@@ -1,5 +1,13 @@
 from django.contrib import admin
-from main.models import Forestry, ForestryDistrict, ForestryMap, ForestryResource
+from main.models import (
+    Forestry,
+    ForestryDistrict, 
+    ForestryMap,
+    ForestryResource,
+    Sensor,
+    SensorType,
+    SensorData
+)
 
 # Register your models here.
 class ForestryAdmin(admin.ModelAdmin):
@@ -82,3 +90,61 @@ class ForestryResourceAdmin(admin.ModelAdmin):
         "type"
     )
 admin.site.register(ForestryResource, ForestryResourceAdmin)
+
+
+
+class SensorAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "forestry",
+        "type",
+        "name",
+        "x", "y", "z"
+    )
+
+    list_display_links = (
+        "id",
+    )
+
+    search_fields = (
+        "forestry", "name"
+    )
+admin.site.register(Sensor, SensorAdmin)
+
+
+class SensorDataAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "sensor",
+        "date",
+        "value"
+    )
+
+    list_display_links = (
+        "id",
+    )
+
+    search_fields = (
+        "sensor",
+    )
+admin.site.register(SensorData, SensorDataAdmin)
+
+
+class SensorTypeAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "unit",
+        "max_std_value",
+        "min_std_value"
+    )
+
+    list_display_links = (
+        "id",
+        "name"
+    )
+
+    search_fields = (
+        "name",
+    )
+admin.site.register(SensorType, SensorTypeAdmin)

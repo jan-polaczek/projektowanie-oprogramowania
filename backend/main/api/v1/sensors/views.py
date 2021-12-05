@@ -16,7 +16,6 @@ from .serializers import (
     SensorDataCreateRequestSerializer,
     SensorDataResponseSerializer,
     SensorDataParamsListRequestSerializer,
-    SensorDataBodyListRequestSerializer,
 )
 
 
@@ -27,7 +26,7 @@ class SensorAPIView(APIView):
         try:
             obj = Sensor.objects.get(id=sensor_id)
         except Sensor.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404()
 
         serializer = SensorResponseSerializer(instance=obj)
 
@@ -41,7 +40,7 @@ class SensorAPIView(APIView):
         try:
             obj = Sensor.objects.get(id=sensor_id)
         except Sensor.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404()
 
         if req_serializer.is_valid():
             obj = req_serializer.update(instance=obj, validated_data=req_serializer.validated_data)
@@ -57,7 +56,7 @@ class SensorAPIView(APIView):
         try:
             obj = Sensor.objects.get(id=sensor_id)
         except Sensor.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404()
 
         obj.delete()
 
@@ -103,46 +102,78 @@ class SensorsAPIView(APIView):
 
 class SensorReportsAPIView(APIView):
 
-    def post(self, request, format=None):
-        req_serializer = SensorDataParamsListRequestSerializer(data=request.query_params)
-        try:
-            res_json = json.loads(request.body.decode('utf-8'))
-            res_json["date_from"] = datetime.strptime(res_json["date_from"], '%Y-%m-%dT%H:%M:%S.%f%z')
-            res_json["date_to"] = datetime.strptime(res_json["date_to"], '%Y-%m-%dT%H:%M:%S.%f%z')
-        except (KeyError, ValueError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        req_serializer_body = SensorDataBodyListRequestSerializer(data=res_json)
+    # def post(self, request, format=None):
+    #     req_serializer = SensorDataParamsListRequestSerializer(data=request.query_params)
+    #     try:
+    #         res_json = json.loads(request.body.decode('utf-8'))
+    #         res_json["date_from"] = datetime.strptime(res_json["date_from"], '%Y-%m-%dT%H:%M:%S.%f%z')
+    #         res_json["date_to"] = datetime.strptime(res_json["date_to"], '%Y-%m-%dT%H:%M:%S.%f%z')
+    #     except (KeyError, ValueError):
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #     req_serializer_body = SensorDataBodyListRequestSerializer(data=res_json)
 
-        if req_serializer.is_valid() and req_serializer_body.is_valid():
-            sensor_id = res_json["sensor_id"]
-            from_datetime = res_json["date_from"]
-            to_datetime = res_json["date_to"]
+    #     if req_serializer.is_valid() and req_serializer_body.is_valid():
+    #         sensor_id = res_json["sensor_id"]
+    #         from_datetime = res_json["date_from"]
+    #         to_datetime = res_json["date_to"]
+    #         paginator = Paginator(
+    #             SensorData.objects.filter(
+    #                 date__date__range=(from_datetime, to_datetime))
+    #                 .filter(sensor_id=sensor_id), 
+    #             req_serializer.validated_data["per_page"]
+    #         )
+    #         try:
+    #             page = paginator.page(req_serializer.validated_data["page"])
+    #         except EmptyPage:
+    #             page = []
+    #         resp_serializer = SensorDataResponseSerializer(page, many=True)
+
+    #         return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+
+    #     return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, sensor_id:int, format=None):
+        try:
+            obj = Sensor.objects.get(id=sensor_id)
+        except Sensor.DoesNotExist:
+            raise Http404()
+
+        req_serializer = SensorDataParamsListRequestSerializer(data=request.query_params)
+        if req_serializer.is_valid():
+            data = req_serializer.validated_data
             paginator = Paginator(
-                SensorData.objects.filter(
-                    date__date__range=(from_datetime, to_datetime))
-                    .filter(sensor_id=sensor_id), 
-                req_serializer.validated_data["per_page"]
+                obj.sensor_measurements.order_by("id"),
+                data["per_page"]
             )
+
             try:
-                page = paginator.page(req_serializer.validated_data["page"])
+                page = paginator.page(data["page"])
             except EmptyPage:
                 page = []
             resp_serializer = SensorDataResponseSerializer(page, many=True)
-
             return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
+
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    # def post(self, request, format=None):
-    #     req_serializer = SensorDataCreateRequestSerializer(data=request.data)
-    #
-    #     if req_serializer.is_valid():
-    #
-    #         new_sensor_data = req_serializer.save()
-    #
-    #         res_serializer = SensorDataResponseSerializer(instance=new_sensor_data)
-    #
-    #         return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
-    #
-    #     return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, sensor_id:int, format=None):
+        try:
+            obj = Sensor.objects.get(id=sensor_id)
+        except Sensor.DoesNotExist:
+            raise Http404()
+
+        req_serializer = SensorDataCreateRequestSerializer(data=request.data)
+    
+        if req_serializer.is_valid():
+            new_sensor_data = SensorData(
+                sensor_id=sensor_id,
+                **req_serializer.validated_data
+            )
+            new_sensor_data.save()
+            
+            res_serializer = SensorDataResponseSerializer(instance=new_sensor_data)
+    
+            return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
+    
+        return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

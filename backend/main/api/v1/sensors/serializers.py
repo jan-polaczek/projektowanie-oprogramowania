@@ -114,7 +114,6 @@ class SensorDataCreateRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorData
         fields = [
-            "sensor_id",
             "date",
             "value"
         ]
@@ -142,6 +141,8 @@ class SensorDataParamsListRequestSerializer(serializers.Serializer):
 
     page = serializers.IntegerField(required=False, default=1)
     per_page = serializers.IntegerField(required=False, default=100)
+    date_from = serializers.DateTimeField(required=False, allow_null=True, default=None)
+    date_to = serializers.DateTimeField(required=False, allow_null=True, default=None)
 
     def validate(self, data):
         data = super().validate(data)
@@ -156,18 +157,23 @@ class SensorDataParamsListRequestSerializer(serializers.Serializer):
                 "per_page": ErrorDetail(string=_("Liczba elementów na stronę musi być z przediziału od 1 do 500"))
             })
 
+        date_from = data["date_from"]
+        date_to = data["date_to"]
+
+        if date_from is not None and date_to is not None:
+            if date_from > date_to:
+                raise serializers.ValidationError({
+                    "date_from": ErrorDetail(
+                        "date_from cannot be after date_to",
+                        code="conflict"
+                    ),
+                    "date_to": ErrorDetail(
+                        "date_to cannot be before date_from",
+                        code="conflict"
+                    )
+                })
+
         return data
 
-
-class SensorDataBodyListRequestSerializer(serializers.Serializer):
-
-    sensor_id = serializers.IntegerField()
-    date_from = serializers.DateTimeField()
-    date_to = serializers.DateTimeField()
-
-    def validate(self, data):
-        data = super().validate(data)
-
-        return data
 
 
