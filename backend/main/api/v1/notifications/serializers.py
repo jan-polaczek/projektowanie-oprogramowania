@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
+from main.models import NotificationData
 from main.models import Forestry, ForestryDistrict, Notification
 from django.utils.translation import gettext as _
 
@@ -9,8 +10,19 @@ class NotificationModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = [
+            "type",
+            "for_sensor",
+            "message",
+            "additional_data",
+            "created_at"
+        ]
+
+class NotificationDataModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationData
+        fields = [
             "sensor_data_id",
-            "type"
+            "notification_id"
         ]
 
 class NotificationCreateRequestSerializer(serializers.ModelSerializer):

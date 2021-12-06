@@ -61,38 +61,35 @@ class SensorData(models.Model):
 
 class Email(models.Model):
 
-    mail = models.CharField(max_length=48)
+    mail = models.EmailField(max_length=256)
  
-class NotificationType(models.Model):
-
-    msg = models.CharField(max_length=48)
 
 class Notification(models.Model):
 
+    class NotificationType(models.IntegerChoices):
+        DEV = (0, _("Dev"))
+        INFO = (1, _("Information"))
+        WARNING = (2, _("Warning"))
+        CRITICAL = (3, _("Critical"))
+
+    type = models.SmallIntegerField(choices=NotificationType.choices, blank=False, null=False, default=NotificationType.INFO, verbose_name=_("Notification_type"))
+    for_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, verbose_name=_("For_sensor"), related_name="sensor_notifications")
+    message = models.CharField(max_length=1024, null=True, blank=True, default=None, verbose_name=_("Message"))
+
+    # Put measurements data here, so that we store actual value measured that
+    # caused the notification, not the value that might have changed later
+    #
+    # Otherwise this is gonna be a total mess
+    #
+    # Also leaving this as JSON field, so that it's not dependent on 1
+    # specific sensor type
+    additional_data = models.JSONField(verbose_name=_("Additional_data"), null=True, blank=True, default=None)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class NotificationData(models.Model):
     sensor_data_id = models.ForeignKey(SensorData, on_delete=models.CASCADE)
-    type = models.ForeignKey(NotificationType, on_delete=models.CASCADE)
-
-    # class NotificationType(models.IntegerChoices):
-    #     DEV = (0, _("Dev"))
-    #     INFO = (1, _("Information"))
-    #     WARNING = (2, _("Warning"))
-    #     CRITICAL = (3, _("Critical"))
-
-    # type = models.SmallIntegerField(choices=NotificationType.choices, blank=False, null=False, default=NotificationType.INFO, verbose_name=_("Notification_type"))
-    # for_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, verbose_name=_("For_sensor"), related_name="sensor_notifications")
-    # message = models.CharField(max_length=1024, null=True, blank=True, default=None, verbose_name=_("Message"))
-
-    # # Put measurements data here, so that we store actual value measured that
-    # # caused the notification, not the value that might have changed later
-    # #
-    # # Otherwise this is gonna be a total mess
-    # #
-    # # Also leaving this as JSON field, so that it's not dependent on 1
-    # # specific sensor type
-    # additional_data = models.JSONField(verbose_name=_("Additional_data"), null=True, blank=True, default=None)
-
-    # created_at = models.DateTimeField(auto_now_add=True)
-
+    notification_id = models.ForeignKey(Notification, on_delete=models.CASCADE)
 
 class ForestryMap(models.Model):
 
