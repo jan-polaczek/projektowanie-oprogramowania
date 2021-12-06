@@ -85,3 +85,17 @@ class SensorNotification():
 
         send_mail_notification(notification)
         PushWebSocketNotification.receive({"message": data})
+
+
+
+from .consumer import NotificationConsumer
+class TestWebsocketAPI(generics.GenericAPIView):
+
+    def post(self, request, format=None):
+        NotificationConsumer.send_message_sync({
+            "type": "test",
+            "test": "test"
+        })
+
+        return Response(data="OK", status=status.HTTP_200_OK)
+

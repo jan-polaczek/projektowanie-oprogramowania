@@ -64,6 +64,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pop_backend.wsgi.application'
+ASGI_APPLICATION = 'pop_backend.asgi.application'
 
 # ws conf
 
@@ -82,7 +83,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-ASGI_APPLICATION = 'pop_backend.ws-routing.application'
+
 
 
 # Password validation

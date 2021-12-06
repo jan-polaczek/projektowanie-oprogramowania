@@ -10,7 +10,17 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import OriginValidator
+
+from main.api.v1.notifications.websocket_urls import urlpatterns as websocket_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pop_backend.settings')
 
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    'http': get_asgi_application(),
+    'websocket': OriginValidator(
+        URLRouter(websocket_urlpatterns),
+        [ '*' ]
+    )
+})
