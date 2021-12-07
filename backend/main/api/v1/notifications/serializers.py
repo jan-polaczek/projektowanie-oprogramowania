@@ -39,7 +39,7 @@ class NotificationResponseSerializer(serializers.ModelSerializer):
     sensor_data_id = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
 
-    def get_sensor_id(self, obj):
+    def get_sensor_data_id(self, obj):
         return obj.id
 
     def get_type(self, obj):

@@ -16,6 +16,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8081",
     "https://localhost:8081",
     "https://127.0.0.1:8081",
+    "http://127.0.0.1:4200",
+    "http://localhost:4200"
 ]
 
 # Database
