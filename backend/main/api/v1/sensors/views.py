@@ -18,9 +18,17 @@ from .serializers import (
     SensorDataParamsListRequestSerializer,
 )
 
+from drf_yasg.utils import swagger_auto_schema
 
 class SensorAPIView(APIView):
 
+    @swagger_auto_schema(
+        operation_summary="Retrieves single record data",
+        operation_description="Retrieves details of single sensor record based on the id given in the URL",
+        responses={
+            status.HTTP_200_OK: SensorResponseSerializer
+        }
+    )
     def get(self, request, sensor_id:int, format=None):
 
         try:
@@ -32,7 +40,14 @@ class SensorAPIView(APIView):
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-
+    @swagger_auto_schema(
+        operation_summary="Sensor partial update",
+        operation_description="Allows for partial update of a single sensor. Updates sensor based on id given in the URL",
+        request_body=SensorUpdateRequestSerializer,
+        responses={
+            status.HTTP_200_OK: SensorResponseSerializer
+        }
+    )
     def patch(self, request, sensor_id:int, format=None):
 
         req_serializer = SensorUpdateRequestSerializer(data=request.data, partial=True)
@@ -51,7 +66,10 @@ class SensorAPIView(APIView):
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+    @swagger_auto_schema(
+        operation_summary="Deletes a sensor",
+        operation_description="Deletes a single sensor permanently. Sensor is deleted based on id given in the URL"
+    )
     def delete(self, request, sensor_id:int, format=None):
         try:
             obj = Sensor.objects.get(id=sensor_id)
@@ -63,9 +81,16 @@ class SensorAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-
 class SensorsAPIView(APIView):
 
+    @swagger_auto_schema(
+        operation_summary="Returns one page of sensors",
+        operation_description="You can use this endpoint to iterate over sensors",
+        query_serializer=SensorListRequestSerializer,
+        responses={
+            status.HTTP_200_OK: SensorResponseSerializer
+        }
+    )
     def get(self, request, format=None):
         req_serializer = SensorListRequestSerializer(data=request.query_params)
 
@@ -84,7 +109,14 @@ class SensorsAPIView(APIView):
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+    @swagger_auto_schema(
+        operation_summary="Adds new sensor",
+        operation_description="Use this endpoint to create new sensor",
+        request_body=SensorCreateRequestSerializer,
+        responses={
+            status.HTTP_201_CREATED: SensorResponseSerializer
+        }
+    )
     def post(self, request, format=None):
         req_serializer = SensorCreateRequestSerializer(data=request.data)
 
@@ -131,7 +163,14 @@ class SensorReportsAPIView(APIView):
     #         return Response(data=resp_serializer.data, status=status.HTTP_200_OK)
 
     #     return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    @swagger_auto_schema(
+        operation_summary="Retrieves sensor measurements",
+        operation_description="Use this endpoint to retrieve sensor measurements between supplited datetimes",
+        responses={
+            status.HTTP_200_OK: SensorDataResponseSerializer
+        },
+        query_serializer=SensorDataParamsListRequestSerializer
+    )
     def get(self, request, sensor_id:int, format=None):
         try:
             obj = Sensor.objects.get(id=sensor_id)
@@ -156,7 +195,14 @@ class SensorReportsAPIView(APIView):
 
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+    @swagger_auto_schema(
+        operation_summary="Adds new sensor measurement",
+        operation_description="Use this endpoint to create new sensor measurement",
+        request_body=SensorDataCreateRequestSerializer,
+        responses={
+            status.HTTP_201_CREATED: SensorDataResponseSerializer
+        }
+    )
     def post(self, request, sensor_id:int, format=None):
         try:
             obj = Sensor.objects.get(id=sensor_id)
