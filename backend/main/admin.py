@@ -6,7 +6,9 @@ from main.models import (
     ForestryResource,
     Sensor,
     SensorType,
-    SensorData
+    SensorData,
+    Notification,
+    NotificationData
 )
 
 # Register your models here.
@@ -148,3 +150,42 @@ class SensorTypeAdmin(admin.ModelAdmin):
         "name",
     )
 admin.site.register(SensorType, SensorTypeAdmin)
+
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "type",
+        "for_sensor",
+        "message",
+        "additional_data",
+        "created_at"
+    )
+
+    list_display_links = (
+        "id",
+        "for_sensor",
+    )
+
+    search_fields = (
+        "message",
+    )
+
+admin.site.register(Notification, NotificationAdmin)
+
+
+class NotificationDataAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "sensor_data_id",
+        "notification_id",
+    )
+
+    list_display_links = (
+        "id",
+    )
+
+    search_fields = (
+        "id",
+    )
+
+admin.site.register(NotificationData, NotificationDataAdmin)
