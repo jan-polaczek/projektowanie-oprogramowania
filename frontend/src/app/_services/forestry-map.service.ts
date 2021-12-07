@@ -22,7 +22,6 @@ export class ForestryMapService implements IForestryMap {
       "map_geojson": geoJson
     }
 
-    console.log(body);
     return this.http.put<any>(environment.apiUrl + "forestry/" + forestry.forestry_id + "/map/geojson/", body);
   }
 }

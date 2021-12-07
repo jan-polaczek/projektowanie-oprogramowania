@@ -31,7 +31,15 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
 
     this.mapService.getMapData(this.forestry).subscribe(response => {
       this.forestryShape = response["map_geojson"];
+      this.initShapeLayer();
+      this.initDrawing();
 
+      try {
+        this.map.fitBounds(this.featureGroup.getBounds());
+      } catch (error) {
+        console.log(error);
+      }
+    }, error => {
       this.initShapeLayer();
       this.initDrawing();
     });
@@ -53,11 +61,9 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   }
 
   private initShapeLayer(): void {
-
     const featureGroup = new L.FeatureGroup();
 
     function onEachGeoJsonFeature(feature, layer) {
-      console.log(feature, layer, featureGroup);
       featureGroup.addLayer(layer);
     }
 
