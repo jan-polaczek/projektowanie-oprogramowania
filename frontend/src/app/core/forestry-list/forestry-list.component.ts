@@ -3,7 +3,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Forestry} from '../../_interfaces/Forestry';
 import {IForestryList} from '../../_interfaces/forestry-service';
 import {ForestryService} from '../../_services/forestry.service';
-import {ForestryDetailsComponent} from "../forestry-details/forestry-details.component";
+import {ForestryDetailsComponent} from '../forestry-details/forestry-details.component';
 
 @Component({
   selector: 'app-forestry-list',
@@ -41,7 +41,6 @@ export class ForestryListComponent implements OnInit {
         });
       }
     }, (reason) => {
-      console.log(reason);
     });
 
     this.forestryNameNgModel = '';

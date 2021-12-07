@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
-import 'leaflet-draw'
+import 'leaflet-draw';
 import {Forestry} from '../../_interfaces/Forestry';
+import {MapData} from '../../_interfaces/forestry-map-service';
 import {ForestryMapService} from '../../_services/forestry-map.service';
-import {MapData} from "../../_interfaces/forestry-map-service";
 
 @Component({
   selector: 'app-map',
@@ -38,7 +38,6 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
       try {
         this.map.fitBounds(this.featureGroup.getBounds());
       } catch (error) {
-        console.log(error);
       }
     }, () => {
       this.initShapeLayer();

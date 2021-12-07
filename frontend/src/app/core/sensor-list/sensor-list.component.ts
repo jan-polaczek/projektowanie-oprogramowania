@@ -1,8 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Sensor} from '../../_interfaces/Sensor';
-import {SensorService} from '../../_services/sensor.service';
 import {ISensorList} from '../../_interfaces/sensor-service';
+import {SensorService} from '../../_services/sensor.service';
 import {SensorDetailsComponent} from '../sensor-details/sensor-details.component';
 
 @Component({
@@ -16,27 +17,35 @@ export class SensorListComponent implements OnInit {
   modalReference: NgbModalRef;
 
   sensors: Sensor[];
+  id: number;
 
   iSensorService: ISensorList;
 
   constructor(private sensorService: SensorService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal,
+              private route: ActivatedRoute) {
     this.iSensorService = sensorService;
   }
 
   ngOnInit(): void {
+    this.id = +this.route.snapshot.params.id || null;
     this.loadSensors();
   }
 
   loadSensors(): void {
     this.iSensorService.getSensors().subscribe(
-      sensors => this.sensors = sensors,
+      sensors => {
+        this.sensors = sensors;
+        if (this.id !== null && this.sensors.find(sensor => sensor.id === this.id)) {
+          this.openDetails(this.id);
+        }
+      },
       () => this.modalService.open(this.errorModal).result.then(() => this.loadSensors()),
     );
-    console.log(this.sensors);
   }
 
-  openDetails(sensor: Sensor): void {
+  openDetails(sensorId: number): void {
+    const sensor = this.sensors.find(sensorEl => sensorEl.id === sensorId);
     const modalRef = this.modalService.open(SensorDetailsComponent,
       {
         windowClass: 'sensorDetails',

@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {Router} from '@angular/router';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,12 +7,12 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss'],
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent {
 
-  constructor(public activeModal: NgbActiveModal) {
-  }
+  @Input() sensorId: number;
 
-  ngOnInit(): void {
+  constructor(public activeModal: NgbActiveModal,
+              private router: Router) {
   }
 
   dismiss(): void {
@@ -20,5 +21,6 @@ export class NotificationComponent implements OnInit {
 
   close(): void {
     this.activeModal.close();
+    this.router.navigate(['sensor-list', this.sensorId]);
   }
 }

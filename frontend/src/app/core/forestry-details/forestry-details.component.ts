@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Forestry} from "../../_interfaces/Forestry";
-import {ForestryMapComponent} from "../map/forestry-map.component";
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Forestry} from '../../_interfaces/Forestry';
+import {ForestryMapComponent} from '../map/forestry-map.component';
 
 @Component({
   selector: 'app-forestry-details',
@@ -10,7 +10,7 @@ import {ForestryMapComponent} from "../map/forestry-map.component";
 })
 export class ForestryDetailsComponent implements OnInit {
 
-  @Input() forestry: Forestry
+  @Input() forestry: Forestry;
   @ViewChild(ForestryMapComponent) child: ForestryMapComponent;
   @ViewChild('saveModal') saveModal: any;
 
@@ -24,13 +24,12 @@ export class ForestryDetailsComponent implements OnInit {
     this.activeModal.close();
   }
 
-  saveMap() {
+  saveMap(): void {
     this.modalService.open(this.saveModal, {centered: true})
-    .result.then(() => {
+      .result.then(() => {
       this.child.saveMap();
       this.activeModal.close();
     }, (reason) => {
-      console.log(reason);
     });
   }
 }

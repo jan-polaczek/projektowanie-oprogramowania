@@ -57,7 +57,6 @@ export class ForestryFormComponent implements OnInit {
   }
 
   saveForestry(content): boolean {
-    console.log(this.registrationForm.getRawValue());
     this.submitted = true;
     if (!this.registrationForm.valid) {
       return false;
@@ -79,7 +78,6 @@ export class ForestryFormComponent implements OnInit {
               });
             },
             error => {
-              console.log(error);
             });
       } else {
         this.iForestryService.editForestry(this.forestry.forestry_id,
@@ -98,7 +96,6 @@ export class ForestryFormComponent implements OnInit {
               });
             },
             error => {
-              console.log(error);
             });
       }
     }

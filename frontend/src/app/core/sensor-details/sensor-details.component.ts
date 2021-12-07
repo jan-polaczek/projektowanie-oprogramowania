@@ -22,8 +22,6 @@ export class SensorDetailsComponent implements OnInit {
   ngOnInit(): void {
     const lastMidnight = new Date(new Date().setHours(0, 0, 0, 0));
     const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0));
-    console.log(lastMidnight);
-    console.log(nextMidnight);
     this.sensorService.getSensorDataById(this.sensor.id).subscribe(
       sensorData => {
         this.value = sensorData[0].value;
