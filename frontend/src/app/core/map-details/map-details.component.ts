@@ -1,7 +1,9 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {MapDetails} from "../../_interfaces/MapDetails";
 import {TreeStandDetails} from "../../_interfaces/TreeStandDetails";
+import {MapService} from "../../_services/map.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-map-details',
@@ -12,6 +14,9 @@ export class MapDetailsComponent {
 
   @ViewChild('deleteModal') deleteModal: any;
   @ViewChild('errorModal') errorModal: any;
+
+
+  mapId = parseInt(this.route.snapshot.queryParams.id);
 
   mapDetails: MapDetails = {
       area: 2000,
@@ -38,8 +43,20 @@ export class MapDetailsComponent {
     }]
 
 
-  constructor(private modalService: NgbModal) {
+  constructor(private modalService: NgbModal,
+              private mapService: MapService,
+              private route: ActivatedRoute) {
+    this.getMapDetails();
   }
 
 
+  getMapDetails(): void{
+    this.mapService.getMapDetailsById(this.mapId).subscribe(
+      mapData => {
+        this.mapDetails = mapData;
+      },
+      () => {
+      },
+    );
+  }
 }
