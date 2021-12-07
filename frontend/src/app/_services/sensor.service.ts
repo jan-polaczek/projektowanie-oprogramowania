@@ -1,9 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
 import {Sensor, SensorData} from '../_interfaces/Sensor';
-import {ISensorReports, ISensorList} from '../_interfaces/sensor-service';
-import {environment} from "../../environments/environment";
+import {ISensorList, ISensorReports} from '../_interfaces/sensor-service';
 
 @Injectable({
   providedIn: 'root',
@@ -54,8 +54,8 @@ export class SensorService implements ISensorReports, ISensorList {
     //return of(this.sensors);
   }
 
-  getSensorDataById(id: number, from: Date, to: Date): Observable<SensorData[]> {
-    return this.http.post<SensorData[]>(`${environment.apiUrl}sensor/data`, {sensor_id: id, date_from: from, date_to: to});
+  getSensorDataById(id: number): Observable<SensorData[]> {
+    return this.http.get<SensorData[]>(`${environment.apiUrl}sensor/${id}/data`);
     //return of(this.sensorData);
   }
 }
