@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import 'leaflet-draw'
 import {Forestry} from '../../_interfaces/Forestry';
 import {ForestryMapService} from '../../_services/forestry-map.service';
+import {MapData} from "../../_interfaces/forestry-map-service";
 
 @Component({
   selector: 'app-map',
@@ -30,7 +31,7 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
     this.initMap();
 
     this.mapService.getMapData(this.forestry).subscribe(response => {
-      this.forestryShape = response["map_geojson"];
+      this.forestryShape = response.map_geojson;
       this.initShapeLayer();
       this.initDrawing();
 
@@ -39,7 +40,7 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
       } catch (error) {
         console.log(error);
       }
-    }, error => {
+    }, () => {
       this.initShapeLayer();
       this.initDrawing();
     });
@@ -124,8 +125,12 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   }
 
   saveMap() {
-    const data = this.featureGroup.toGeoJSON();
-    this.mapService.editMapData(this.forestry, data).subscribe(() => {
+    const mapData: MapData = {
+      forestry_id: this.forestry.forestry_id,
+      map_geojson: this.featureGroup.toGeoJSON()
+    }
+
+    this.mapService.editMapData(mapData).subscribe(() => {
     });
   }
 
