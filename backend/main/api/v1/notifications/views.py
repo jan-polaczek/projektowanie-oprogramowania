@@ -1,3 +1,4 @@
+from django.core.checks.messages import Error
 from rest_framework.views import APIView, Response, Http404, status
 from rest_framework import generics
 from djangochannelsrestframework.consumers import AsyncAPIConsumer
@@ -9,7 +10,7 @@ from .push_websocket_notification import PushWebSocketNotification
 from .send_mail_notification import send_mail_notification
 import json
 
-from main.models import Notification
+from main.models import Notification, Sensor
 
 from .serializers import (
     NotificationResponseSerializer
@@ -40,16 +41,19 @@ class HistoricalNotifications(APIView):
 class ManageHistoricalNotifications():
 
     def saveNotification(data):
-        notificationToSave = Notification(type=data.type, for_sensor=data.for_sensor, message=data.message,
-        additional_data=data.additional_data, created_at=data.created_at)
+        try:
+            sensor = Sensor.objects.get(id=data["sensor_id"])
+        except Sensor.DoesNotExist:
+            raise Http404
+        notificationToSave = Notification(type=data["type"], for_sensor=sensor, message=data["message"])
         notificationToSave.save()
 
 class SensorNotification():
 
-    def send_notification(self, notification, data):
+    def send_notification(self, data):
         ManageHistoricalNotifications.saveNotification(data)
-        send_mail_notification(notification)
-        PushWebSocketNotification.receive({"message": data})
+        send_mail_notification(data["type"])
+        NotificationConsumer.send_message_sync(data)
 
 
 
@@ -62,4 +66,3 @@ class TestWebsocketAPI(generics.GenericAPIView):
         })
 
         return Response(data="OK", status=status.HTTP_200_OK)
-

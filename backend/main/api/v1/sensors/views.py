@@ -4,6 +4,7 @@ from rest_framework import generics
 from django.core.paginator import Paginator, EmptyPage
 import json
 from datetime import datetime
+from main.api.v1.notifications.views import SensorNotification
 
 from main.models import Sensor, SensorData
 
@@ -131,7 +132,6 @@ class SensorsAPIView(APIView):
         return Response(data=req_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class SensorReportsAPIView(APIView):
 
     # def post(self, request, format=None):
@@ -218,6 +218,13 @@ class SensorReportsAPIView(APIView):
             )
             new_sensor_data.save()
             
+            if (int(new_sensor_data.value) > 50):
+                SensorNotification().send_notification({
+                    "type": 3,
+                    "sensor_id": sensor_id, 
+                    "message": "FIRE ALERT NEAR SENSOR NO " + str(sensor_id)
+                })
+
             res_serializer = SensorDataResponseSerializer(instance=new_sensor_data)
     
             return Response(data=res_serializer.data, status=status.HTTP_201_CREATED)
