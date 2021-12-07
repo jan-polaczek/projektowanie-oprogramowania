@@ -3,4 +3,6 @@ import {Forestry} from './Forestry';
 
 export interface IForestryMap {
   getMapData(forestry: Forestry): Observable<any>;
+
+  editMapData(forestry: Forestry, geoJson: any): Observable<any>;
 }

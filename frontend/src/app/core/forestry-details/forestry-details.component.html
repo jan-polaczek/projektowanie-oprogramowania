@@ -6,4 +6,34 @@
 </div>
 <div class="modal-body">
   <app-map [forestry]="forestry"></app-map>
+
+  <div class="row justify-content-around m-2">
+    <button class="btn btn-outline-danger px-4" (click)="dismiss()">Anuluj</button>
+    <button class="btn btn-outline-primary px-4" (click)="saveMap()">Zapisz</button>
+  </div>
+
+  <hr class="mb-4">
+
+  <div class="row justify-content-around m-2">
+    <button class="btn btn-outline-primary mx-1" routerLink="/map-details" (click)="dismiss()">
+      Wyświetl zestawienie danych z wybranego obszaru
+    </button>
+
+    <button class="btn btn-outline-primary mx-1" routerLink="/animal-existence-list" (click)="dismiss()">
+      Wyświetl dane o bytowaniu zwierząt na wybranych obszarze
+    </button>
+  </div>
 </div>
+
+<ng-template #saveModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Czy chcesz zmienić granice leśnictwa?</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body row justify-content-around">
+    <button type="button" class="btn btn-outline-dark px-5 mr-4" (click)="modal.dismiss()">Nie</button>
+    <button type="button" class="btn btn-primary px-5" (click)="modal.close()">Tak</button>
+  </div>
+</ng-template>

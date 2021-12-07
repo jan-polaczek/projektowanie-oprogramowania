@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
+import 'leaflet-draw'
 import {Forestry} from '../../_interfaces/Forestry';
 import {ForestryMapService} from '../../_services/forestry-map.service';
 
@@ -16,6 +17,7 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
 
   private map;
   private forestryShape;
+  private featureGroup = new L.FeatureGroup();
 
   constructor(private mapService: ForestryMapService,
               public activeModal: NgbActiveModal) {
@@ -27,9 +29,11 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
 
-    this.mapService.getMapData(this.forestry).subscribe(forestryShape => {
-      this.forestryShape = forestryShape;
+    this.mapService.getMapData(this.forestry).subscribe(response => {
+      this.forestryShape = response["map_geojson"];
+
       this.initShapeLayer();
+      this.initDrawing();
     });
   }
 
@@ -49,18 +53,74 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   }
 
   private initShapeLayer(): void {
-    const shapeLayer = L.geoJSON(this.forestryShape, {
-      style: (feature) => ({
+
+    const featureGroup = new L.FeatureGroup();
+
+    function onEachGeoJsonFeature(feature, layer) {
+      console.log(feature, layer, featureGroup);
+      featureGroup.addLayer(layer);
+    }
+
+    L.geoJSON(this.forestryShape, {
+      onEachFeature: onEachGeoJsonFeature,
+      style: {
         weight: 4,
         opacity: 1,
         color: '#000000',
         fillOpacity: 0.5,
         fillColor: '#54c538',
-      }),
+      },
     });
 
-    this.map.addLayer(shapeLayer);
-    this.map.fitBounds(shapeLayer.getBounds());
+    this.featureGroup = featureGroup;
+    this.map.addLayer(this.featureGroup);
+  }
+
+  private initDrawing() {
+    const options = {
+      position: 'topright',
+      draw: {
+        polygon: {
+          allowIntersection: false,
+          drawError: {
+            color: '#e10000',
+            timeout: 2000,
+            message: 'Granice leśnictwa nie mogą się przecinać.'
+          },
+          shapeOptions: {
+            color: '#000000',
+            fillColor: '#54c538'
+          }
+        },
+        polyline: false,
+        circle: false,
+        rectangle: false,
+        marker: false,
+        circlemarker: false,
+      },
+      edit: {
+        featureGroup: this.featureGroup,
+        remove: true,
+        poly: {
+          allowIntersection: false
+        }
+      }
+    };
+
+    const drawControl = new L.Control.Draw(options);
+    this.map.addControl(drawControl);
+
+    const featureGroup = this.featureGroup;
+
+    this.map.on(L.Draw.Event.CREATED, function (e) {
+      featureGroup.addLayer(e.layer);
+    });
+  }
+
+  saveMap() {
+    const data = this.featureGroup.toGeoJSON();
+    this.mapService.editMapData(this.forestry, data).subscribe(() => {
+    });
   }
 
   close(): void {
