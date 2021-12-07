@@ -7,3 +7,5 @@
 .settings/
 *.sublime-workspace
 *.pyc
+/venv
+.vscode/

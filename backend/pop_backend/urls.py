@@ -16,9 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from main.api.v1.urls import urlpatterns as api_v1_urls
+from .api_v1_urls import urlpatterns as api_v1_urls
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view_api_v1 = get_schema_view(
+    openapi.Info(
+        title="Forestries API v1",
+        default_version="v1"
+    ),
+    urlconf="pop_backend.api_v1_urls",
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    *api_v1_urls
+    path('api-docs/v1/swagger/', schema_view_api_v1.with_ui('swagger', cache_timeout=0), name='api-docs_v1_swagger'),
+    path('api-docs/v1/redoc/', schema_view_api_v1.with_ui('redoc', cache_timeout=0), name='api-docs_v1_redoc'),
+    *api_v1_urls,
 ]
