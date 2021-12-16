@@ -108,3 +108,21 @@ class ForestryResource(models.Model):
     name = models.CharField(max_length=128, blank=False, null=False, verbose_name=_("Resource_name"))
     quantity = models.FloatField(verbose_name=_("Resource_quantity"), blank=False, null=False)
     quantity_unit = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name=_("Resource_quantity_unit"))
+
+
+
+class PlantType(models.Model):
+    name = models.CharField(max_length=48, null=False, blank=False, unique=True, verbose_name=_("Plant_type"))
+
+class ActionType(models.Model):
+    name = models.CharField(max_length=48, null=False, blank=False, unique=True, verbose_name=_("Action_type"))
+
+class ForestryAction(models.Model):
+    plant_type = models.ForeignKey(PlantType, on_delete=models.RESTRICT, null=True, blank=True, default=None, verbose_name=_("Plant_type"), related_name="forestry_actions")
+    action_type = models.ForeignKey(ActionType, on_delete=models.RESTRICT, null=False, blank=False, verbose_name=_("Action_type"), related_name="forestry_actions")
+
+    start_date = models.DateTimeField(null=True, blank=True, default=None, verbose_name=_("Start_date"))
+    end_date = models.DateTimeField(null=True, blank=True, default=None, verbose_name=_("End_date"))
+
+    region = models.JSONField(null=True, blank=True, default=None, verbose_name=_("Region"))
+    number_of_trees = models.IntegerField(null=True, blank=True, default=None, verbose_name=_("Number_of_trees"))
