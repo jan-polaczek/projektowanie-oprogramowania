@@ -4,6 +4,7 @@ from rest_framework.views import APIView, Response, Http404, status
 from rest_framework import generics
 from django.core.paginator import Paginator, EmptyPage
 from drf_yasg import openapi
+from main.models import ForestryAction
 
 from main.models import Forestry, ForestryMap, ForestryResource
 
@@ -19,7 +20,11 @@ from .serializers import (
     ForestryResourcesGetRequestSerializer,
     ForestryResourcesPostRequestSerializer,
     ForestryResourcePatchRequestSerializer,
-    ForestryResourceResponseSerializer
+    ForestryResourceResponseSerializer,
+
+    ForestationResponseSerializer,
+    ForestationsAPIPostResponseSerializer,
+    ForestationAPIPatchRequestSerializer
 )
 
 from drf_yasg.utils import swagger_auto_schema
@@ -390,5 +395,96 @@ class ForestryResourceAPIView(generics.GenericAPIView):
             return Response(data={
                 "details": "An unknown internal server error has occured"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class ForestationsAPIView(generics.GenericAPIView):
+    
+
+    def get(self, request, forestry_id:int, format=None):
+        try:
+            forestry = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        forestations = ForestryAction.objects.filter(forestry=forestry, action_type_id=1).order_by("id")
+
+        response = ForestationResponseSerializer(instance=forestations, many=True)
+
+        return Response(data=response.data, status=status.HTTP_200_OK)
+
+    def post(self, request, forestry_id:int, format=None):
+        try:
+            forestry = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestationsAPIPostResponseSerializer(data=request.data)
+
+        if serializer.is_valid():
+            data = serializer.validated_data
+            obj = ForestryAction(
+                forestry_id=forestry_id,
+                action_type_id=1,
+                **data
+            )
+            obj.save()
+            response = ForestationResponseSerializer(instance=obj)
+            return Response(data=response.data, status = status.HTTP_201_CREATED)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForestationAPIView(generics.GenericAPIView):
+
+    def get(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=1
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        response = ForestationResponseSerializer(instance=obj)
+        return Response(data=response.data, status= status.HTTP_200_OK)
+
+    def patch(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=1
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestationAPIPatchRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            for key, value in data.items():
+                setattr(obj, key, value)
+
+            obj.save()
+
+            response = ForestationResponseSerializer(instance=obj)
+            return Response(data=response.data, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=1
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

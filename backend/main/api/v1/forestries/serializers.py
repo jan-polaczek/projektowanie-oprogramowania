@@ -229,6 +229,7 @@ class ForestationResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = ForestryAction
         fields = (
+            "id",
             "plant_type",
             "start_date",
             "end_date",
