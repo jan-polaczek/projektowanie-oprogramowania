@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
-from main.models import Forestry, ForestryDistrict, ForestryMap, ForestryResource
+from main.models import Forestry, ForestryDistrict, ForestryMap, ForestryResource, ForestryAction
 from django.utils.translation import gettext as _
 
 class MySerializer(serializers.Serializer):
@@ -220,4 +220,43 @@ class ForestryResourcePatchRequestSerializer(serializers.ModelSerializer):
             "name",
             "quantity",
             "quantity_unit"
+        )
+
+
+
+class ForestationResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForestryAction
+        fields = (
+            "plant_type",
+            "start_date",
+            "end_date",
+            "region",
+            "number_of_trees"
+        )
+
+class ForestationsAPIPostResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForestryAction
+        fields = (
+            "plant_type",
+            "start_date",
+            "end_date",
+            "region",
+            "number_of_trees"
+        )
+
+
+class ForestationAPIPatchRequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ForestryAction
+        fields = (
+            "plant_type",
+            "start_date",
+            "end_date",
+            "region",
+            "number_of_trees"
         )

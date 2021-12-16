@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields import related
 from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
@@ -118,6 +119,7 @@ class ActionType(models.Model):
     name = models.CharField(max_length=48, null=False, blank=False, unique=True, verbose_name=_("Action_type"))
 
 class ForestryAction(models.Model):
+    forestry = models.ForeignKey(Forestry, on_delete=models.CASCADE, null=False, blank=False, verbose_name=_("Forestry"), related_name="forestry_actions")
     plant_type = models.ForeignKey(PlantType, on_delete=models.RESTRICT, null=True, blank=True, default=None, verbose_name=_("Plant_type"), related_name="forestry_actions")
     action_type = models.ForeignKey(ActionType, on_delete=models.RESTRICT, null=False, blank=False, verbose_name=_("Action_type"), related_name="forestry_actions")
 
