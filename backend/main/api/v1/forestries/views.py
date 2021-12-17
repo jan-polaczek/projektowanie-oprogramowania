@@ -402,7 +402,13 @@ class ForestryResourceAPIView(generics.GenericAPIView):
 
 class ForestationsAPIView(generics.GenericAPIView):
     
-
+    @swagger_auto_schema(
+        operation_summary="Returns forestrations records",
+        operation_description="You can use this endpoint to show all forestrations records",
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
     def get(self, request, forestry_id:int, format=None):
         try:
             forestry = Forestry.objects.get(id=forestry_id)
@@ -415,6 +421,14 @@ class ForestationsAPIView(generics.GenericAPIView):
 
         return Response(data=response.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_summary="Adds new forestration record",
+        operation_description="Use this endpoint to create new forestration record",
+        request_body=ForestationsAPIPostResponseSerializer,
+        responses={
+            status.HTTP_201_CREATED: ForestationResponseSerializer
+        }
+    )
     def post(self, request, forestry_id:int, format=None):
         try:
             forestry = Forestry.objects.get(id=forestry_id)
@@ -439,6 +453,13 @@ class ForestationsAPIView(generics.GenericAPIView):
 
 class ForestationAPIView(generics.GenericAPIView):
 
+    @swagger_auto_schema(
+        operation_summary="Retrieve single resource",
+        operation_description="Retrieves a single resource data about forestration if it exists and is assigned to requested forestry",
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
     def get(self, request, forestry_id:int, action_id:int, format=None):
         try:
             obj = ForestryAction.objects.get(
@@ -452,6 +473,14 @@ class ForestationAPIView(generics.GenericAPIView):
         response = ForestationResponseSerializer(instance=obj)
         return Response(data=response.data, status= status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_summary="Updates a single resource",
+        operation_description="Updates a resource about forestration, if requested resource exists and is assigned to requested forestry",
+        request_body=ForestationAPIPatchRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
     def patch(self, request, forestry_id:int, action_id:int, format=None):
         try:
             obj = ForestryAction.objects.get(
@@ -475,12 +504,139 @@ class ForestationAPIView(generics.GenericAPIView):
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        operation_summary="Removes a resource",
+        operation_description="Removes a single resource about forestration, if it exists and is assigned to the requested frorestry"
+    )
     def delete(self, request, forestry_id:int, action_id:int, format=None):
         try:
             obj = ForestryAction.objects.get(
                 forestry_id=forestry_id,
                 id=action_id,
                 action_type_id=1
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        obj.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
+class DeforestationsAPIView(generics.GenericAPIView):
+
+    @swagger_auto_schema(
+        operation_summary="Returns deforestrations records",
+        operation_description="You can use this endpoint to show all deforestrations records",
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
+    def get(self, request, forestry_id:int, format=None):
+        try:
+            forestry = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        deforestations = ForestryAction.objects.filter(forestry=forestry, action_type_id=2).order_by("id")
+
+        response = ForestationResponseSerializer(instance=deforestations, many=True)
+
+        return Response(data=response.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Adds new deforestration record",
+        operation_description="Use this endpoint to create new deforestration record",
+        request_body=ForestationsAPIPostResponseSerializer,
+        responses={
+            status.HTTP_201_CREATED: ForestationResponseSerializer
+        }
+    )
+    def post(self, request, forestry_id:int, format=None):
+        try:
+            forestry = Forestry.objects.get(id=forestry_id)
+        except Forestry.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestationsAPIPostResponseSerializer(data=request.data)
+
+        if serializer.is_valid():
+            data = serializer.validated_data
+            obj = ForestryAction(
+                forestry_id=forestry_id,
+                action_type_id=2,
+                **data
+            )
+            obj.save()
+            response = ForestationResponseSerializer(instance=obj)
+            return Response(data=response.data, status = status.HTTP_201_CREATED)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeforestationAPIView(generics.GenericAPIView):
+
+    @swagger_auto_schema(
+        operation_summary="Retrieve single resource",
+        operation_description="Retrieves a single resource data about deforestration if it exists and is assigned to requested forestry",
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
+    def get(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=2
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        response = ForestationResponseSerializer(instance=obj)
+        return Response(data=response.data, status= status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Updates a single resource",
+        operation_description="Updates a resource about deforestration, if requested resource exists and is assigned to requested forestry",
+        request_body=ForestationAPIPatchRequestSerializer,
+        responses={
+            status.HTTP_200_OK: ForestationResponseSerializer
+        }
+    )
+    def patch(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=2
+            )
+        except ForestryAction.DoesNotExist:
+            raise Http404()
+
+        serializer = ForestationAPIPatchRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            for key, value in data.items():
+                setattr(obj, key, value)
+
+            obj.save()
+
+            response = ForestationResponseSerializer(instance=obj)
+            return Response(data=response.data, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="Removes a resource",
+        operation_description="Removes a single resource about deforestration, if it exists and is assigned to the requested frorestry"
+    )
+    def delete(self, request, forestry_id:int, action_id:int, format=None):
+        try:
+            obj = ForestryAction.objects.get(
+                forestry_id=forestry_id,
+                id=action_id,
+                action_type_id=2
             )
         except ForestryAction.DoesNotExist:
             raise Http404()
