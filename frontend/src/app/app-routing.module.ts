@@ -5,6 +5,7 @@ import {ForestryFormComponent} from './core/forestry-form/forestry-form.componen
 import {ForestryListComponent} from './core/forestry-list/forestry-list.component';
 import {MapDetailsComponent} from './core/map-details/map-details.component';
 import {SensorListComponent} from './core/sensor-list/sensor-list.component';
+import {PlannedActionsListComponent} from "./core/planned-actions-list/planned-actions-list.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'forestry-list', pathMatch: 'full'},
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: 'form/:id', component: ForestryFormComponent},
   {path: 'sensor-list', component: SensorListComponent},
   {path: 'sensor-list/:id', component: SensorListComponent},
+  {path: 'planned-actions-list/:id', component: PlannedActionsListComponent},
 ];
 
 @NgModule({

@@ -8,6 +8,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ForestryMapComponent} from "./map/forestry-map.component";
 import {AnimalExistenceListComponent} from "./animal-existence-list/animal-existence-list.component";
 import {MapDetailsComponent} from "./map-details/map-details.component";
+import {PlannedActionsListComponent} from "./planned-actions-list/planned-actions-list.component";
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {MapDetailsComponent} from "./map-details/map-details.component";
     ForestryDetailsComponent,
     ForestryMapComponent,
     AnimalExistenceListComponent,
-    MapDetailsComponent
+    MapDetailsComponent,
+    PlannedActionsListComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,28 @@
+<h3>Lista zaplanowanych akcji leśniczych</h3>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Typ</th>
+    <th scope="col">Obszar</th>
+    <th scope="col">Termin</th>
+    <th scope="col">Akcje</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr *ngFor="let action of plannedActions">
+    <td>{{action.typeId == 1 ? "Zalesienie" : "Wycinka"}}</td>
+    <td>Obszar #{{action.id}}</td>
+    <td>{{action.start_date | date :'dd.MM.yyyy'}} – {{action.end_date | date :'dd.MM.yyyy'}}</td>
+    <td class="text-center">
+      <button class="btn btn-outline-primary mx-1">💬</button>
+      <button class="btn btn-outline-success mx-1">✔️</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div class="row justify-content-around mt-5">
+  <button class="btn btn-primary">Zaplanuj przeprowadzenie zalesienia</button>
+  <button class="btn btn-primary">Zaplanuj przeprowadzenie wycinki</button>
+</div>
