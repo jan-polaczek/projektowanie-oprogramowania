@@ -9,6 +9,7 @@ import {ForestryMapComponent} from "./map/forestry-map.component";
 import {AnimalExistenceListComponent} from "./animal-existence-list/animal-existence-list.component";
 import {MapDetailsComponent} from "./map-details/map-details.component";
 import {PlannedActionsListComponent} from "./planned-actions-list/planned-actions-list.component";
+import {StorageListComponent} from "./storage-list/storage-list.component";
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {PlannedActionsListComponent} from "./planned-actions-list/planned-action
     ForestryMapComponent,
     AnimalExistenceListComponent,
     MapDetailsComponent,
-    PlannedActionsListComponent
+    PlannedActionsListComponent,
+    StorageListComponent
   ],
   imports: [
     CommonModule,
