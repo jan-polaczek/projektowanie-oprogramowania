@@ -52,12 +52,12 @@ export class PlannedActionsListComponent implements OnInit {
     if (action.typeId === 1) {
       this.forestationDeforestationService.deleteForestation(this.forestryId, action.id).subscribe(() => {
         this.openInfoModal();
-        this.fetchPlannedActions();
+        this.plannedActions = this.plannedActions.filter(plannedAction => !(plannedAction.id === action.id && action.typeId === 1));
       });
     } else {
       this.forestationDeforestationService.deleteDeforestation(this.forestryId, action.id).subscribe(() => {
         this.openInfoModal();
-        this.fetchPlannedActions();
+        this.plannedActions = this.plannedActions.filter(plannedAction => !(plannedAction.id === action.id && action.typeId === 2));
       });
     }
   }
