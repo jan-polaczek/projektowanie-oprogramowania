@@ -16,11 +16,24 @@
     <td>{{action.start_date | date :'dd.MM.yyyy'}} – {{action.end_date | date :'dd.MM.yyyy'}}</td>
     <td class="text-center">
       <button class="btn btn-outline-primary mx-1">💬</button>
-      <button class="btn btn-outline-success mx-1">✔️</button>
+      <button class="btn btn-outline-success mx-1" (click)="openInfoModal()" >✔️</button>
     </td>
   </tr>
   </tbody>
 </table>
+
+<ng-template #infoModal let-modal>
+  <div class="text-center" style="margin-top: 10px">
+    <h4 class="modal-title">INFO</h4>
+  </div>
+  <div class="text-center" style="margin-top: 30px">
+    <p>Zarejestrowano wykonanie akcji</p>
+  </div>
+  <div style="margin-top: 50px" class="text-center">
+  <button type="button"  (click)="modal.close()">OK
+  </button>
+  </div>
+</ng-template>
 
 <div class="row justify-content-around mt-5">
   <button class="btn btn-primary">Zaplanuj przeprowadzenie zalesienia</button>

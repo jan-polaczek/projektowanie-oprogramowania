@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {ForestationDeforestationService} from "../../_services/forestation-deforestation.service";
 import {ForestryAction} from "../../_interfaces/ForestryAction";
+import {MatDialog} from "@angular/material/dialog";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+
 
 @Component({
   selector: 'app-forestry-actions-list',
@@ -10,11 +12,13 @@ import {ForestryAction} from "../../_interfaces/ForestryAction";
 })
 export class PlannedActionsListComponent implements OnInit {
 
+  @ViewChild('infoModal') infoModal: any;
+
   forestryId: number
-  plannedActions: ForestryAction[];
+  plannedActions: ForestryAction[]
 
   constructor(private route: ActivatedRoute,
-              private forestationDeforestationService: ForestationDeforestationService) {
+              private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -31,4 +35,11 @@ export class PlannedActionsListComponent implements OnInit {
       this.plannedActions.push(...deforestations);
     })
   }
+
+  openInfoModal(): void {
+    this.modalService.open(this.infoModal, {centered: true})
+      .result.then(() => {
+    })
+  }
+
 }
