@@ -15,7 +15,7 @@ export class PlannedActionsListComponent implements OnInit {
   @ViewChild('infoModal') infoModal: any;
 
   forestryId: number;
-  plannedActions: ForestryAction[];
+  plannedActions: ForestryAction[] = [];
 
   constructor(private route: ActivatedRoute,
               private modalService: NgbModal,
@@ -24,24 +24,41 @@ export class PlannedActionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.forestryId = this.route.snapshot.params.id;
-    this.plannedActions = [];
 
+    this.fetchPlannedActions();
+  }
+
+  fetchPlannedActions(): void {
+    const plannedActions: ForestryAction[] = [];
     this.forestationDeforestationService.getForestations(this.forestryId).subscribe(forestations => {
       forestations.forEach(forestation => forestation.typeId = 1);
-      this.plannedActions.push(...forestations);
+      plannedActions.push(...forestations);
     });
 
     this.forestationDeforestationService.getDeforestations(this.forestryId).subscribe(deforestations => {
       deforestations.forEach(deforestation => deforestation.typeId = 2);
-      this.plannedActions.push(...deforestations);
+      plannedActions.push(...deforestations);
     });
+    this.plannedActions = plannedActions;
   }
 
   openInfoModal(): void {
     this.modalService.open(this.infoModal, {centered: true})
       .result.then(() => {
-      // wyslij zarejestrowanie akcji
     });
   }
 
+  removePlannedAction(action: ForestryAction): void {
+    if (action.typeId === 1) {
+      this.forestationDeforestationService.deleteForestation(this.forestryId, action.id).subscribe(() => {
+        this.openInfoModal();
+        this.fetchPlannedActions();
+      });
+    } else {
+      this.forestationDeforestationService.deleteDeforestation(this.forestryId, action.id).subscribe(() => {
+        this.openInfoModal();
+        this.fetchPlannedActions();
+      });
+    }
+  }
 }

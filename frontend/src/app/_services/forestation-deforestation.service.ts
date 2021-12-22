@@ -20,6 +20,14 @@ export class ForestationDeforestationService implements IPlannedActionsList, IFo
     return this.http.get<ForestryAction[]>(environment.apiUrl + 'forestry/' + forestryId + '/deforestations/');
   }
 
+  deleteForestation(forestryId: number, actionId: number): Observable<void> {
+    return this.http.delete<void>(environment.apiUrl + 'forestry/' + forestryId + '/forestation/' + actionId);
+  }
+
+  deleteDeforestation(forestryId: number, actionId: number): Observable<void> {
+    return this.http.delete<void>(environment.apiUrl + 'forestry/' + forestryId + '/deforestation/' + actionId);
+  }
+
   addForestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction> {
     return this.http.post<ForestryAction>(environment.apiUrl + 'forestry/' + forestryId + '/forestations/', forestryAction);
   }

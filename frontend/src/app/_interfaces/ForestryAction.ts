@@ -14,6 +14,10 @@ export interface IPlannedActionsList {
   getForestations(forestryId: number): Observable<ForestryAction[]>;
 
   getDeforestations(forestryId: number): Observable<ForestryAction[]>;
+
+  deleteForestation(forestryId: number, actionId: number): Observable<void>;
+
+  deleteDeforestation(forestryId: number, actionId: number): Observable<void>;
 }
 
 export interface IForestationForm {
