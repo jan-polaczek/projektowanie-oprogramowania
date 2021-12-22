@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ForestationDeforestationService} from "../../_services/forestation-deforestation.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ForestationDeforestationService} from '../../_services/forestation-deforestation.service';
 
 @Component({
   selector: 'app-deforestation-form',
   templateUrl: './deforestation-form.component.html',
-  styleUrls: ['./deforestation-form.component.scss']
+  styleUrls: ['./deforestation-form.component.scss'],
 })
 export class DeforestationFormComponent implements OnInit {
 
@@ -42,8 +42,8 @@ export class DeforestationFormComponent implements OnInit {
           {
             region: null,
             plant_type: this.deforestationForm.value.plant_type,
-            start_date: this.deforestationForm.value.start_date,
-            end_date: this.deforestationForm.value.end_date,
+            start_date: new Date(this.deforestationForm.value.start_date),
+            end_date: new Date(this.deforestationForm.value.end_date),
             number_of_trees: this.deforestationForm.value.number_of_trees,
           }).subscribe(() => {
           this.router.navigate(['/planned-actions-list/' + this.forestryId]);

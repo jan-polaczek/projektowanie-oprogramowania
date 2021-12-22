@@ -22,7 +22,7 @@
         required
         formControlName="start_date"
         name="start_date"
-        placeholder="YYYY-MM-DDThh:mm"
+        placeholder="YYYY-MM-DD"
       />
       <div *ngIf="submitted && form.start_date.invalid" class="alert alert-danger">
         <div *ngIf="form.start_date.errors?.required">Uzupełnij pole</div>
@@ -36,7 +36,7 @@
         required
         formControlName="end_date"
         name="end_date"
-        placeholder="YYYY-MM-DDThh:mm"
+        placeholder="YYYY-MM-DD"
       />
       <div *ngIf="submitted && form.end_date.invalid" class="alert alert-danger">
         <div *ngIf="form.end_date.errors?.required">Uzupełnij pole</div>

@@ -44,8 +44,8 @@ export class ForestationFormComponent implements OnInit {
             {
               region: null,
               plant_type: this.forestationForm.value.plant_type,
-              start_date: this.forestationForm.value.start_date,
-              end_date: this.forestationForm.value.end_date,
+              start_date: new Date(this.forestationForm.value.start_date),
+              end_date: new Date(this.forestationForm.value.end_date),
               number_of_trees: this.forestationForm.value.number_of_trees,
             }).subscribe(() => {
             this.router.navigate(['/planned-actions-list/' + this.forestryId]);
