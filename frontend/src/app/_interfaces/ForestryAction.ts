@@ -1,7 +1,7 @@
-import {Observable} from "rxjs";
+import {Observable} from 'rxjs';
 
 export interface ForestryAction {
-  id: number;
+  id?: number;
   plant_type: number;
   start_date: Date;
   end_date: Date;
@@ -12,5 +12,10 @@ export interface ForestryAction {
 
 export interface IPlannedActionsList {
   getForestations(forestryId: number): Observable<ForestryAction[]>;
+
   getDeforestations(forestryId: number): Observable<ForestryAction[]>;
+}
+
+export interface IForestationForm {
+  addForestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction>;
 }

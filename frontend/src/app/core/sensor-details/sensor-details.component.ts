@@ -24,7 +24,7 @@ export class SensorDetailsComponent implements OnInit {
     const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0));
     this.sensorService.getSensorDataById(this.sensor.id).subscribe(
       sensorData => {
-        this.value = sensorData[0].value;
+        this.value = sensorData[sensorData.length - 1].value;
         this.valueMin = Math.min(...sensorData.map(v => v.value));
         this.valueMax = Math.max(...sensorData.map(v => v.value));
       },

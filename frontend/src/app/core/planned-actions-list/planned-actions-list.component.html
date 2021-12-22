@@ -23,19 +23,21 @@
 </table>
 
 <ng-template #infoModal let-modal>
-  <div class="text-center" style="margin-top: 10px">
+  <div class="modal-header">
     <h4 class="modal-title">INFO</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-  <div class="text-center" style="margin-top: 30px">
+  <div class="modal-body text-center">
     <p>Zarejestrowano wykonanie akcji</p>
-  </div>
-  <div style="margin-top: 50px" class="text-center">
-  <button type="button"  (click)="modal.close()">OK
-  </button>
+    <button type="button" class="btn btn-outline-dark mx-3" (click)="modal.close()">OK</button>
   </div>
 </ng-template>
 
 <div class="row justify-content-around mt-5">
-  <button class="btn btn-primary">Zaplanuj przeprowadzenie zalesienia</button>
+  <button class="btn btn-primary" [routerLink]="'/planned-actions-list/' + forestryId + '/forestation'">Zaplanuj
+    przeprowadzenie zalesienia
+  </button>
   <button class="btn btn-primary">Zaplanuj przeprowadzenie wycinki</button>
 </div>

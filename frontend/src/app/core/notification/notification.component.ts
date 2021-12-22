@@ -17,6 +17,7 @@ export class NotificationComponent {
 
   dismiss(): void {
     this.activeModal.dismiss();
+    this.router.navigate(['sensor-list', this.sensorId]);
   }
 
   close(): void {

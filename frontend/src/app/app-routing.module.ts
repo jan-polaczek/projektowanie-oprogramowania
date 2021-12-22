@@ -1,12 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AnimalExistenceListComponent} from './core/animal-existence-list/animal-existence-list.component';
+import {ForestationFormComponent} from './core/forestation-form/forestation-form.component';
 import {ForestryFormComponent} from './core/forestry-form/forestry-form.component';
 import {ForestryListComponent} from './core/forestry-list/forestry-list.component';
 import {MapDetailsComponent} from './core/map-details/map-details.component';
+import {PlannedActionsListComponent} from './core/planned-actions-list/planned-actions-list.component';
 import {SensorListComponent} from './core/sensor-list/sensor-list.component';
-import {PlannedActionsListComponent} from "./core/planned-actions-list/planned-actions-list.component";
-import {StorageListComponent} from "./core/storage-list/storage-list.component";
+import {StorageListComponent} from './core/storage-list/storage-list.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'forestry-list', pathMatch: 'full'},
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'sensor-list/:id', component: SensorListComponent},
   {path: 'storage-list/:id', component: StorageListComponent},
   {path: 'planned-actions-list/:id', component: PlannedActionsListComponent},
+  {path: 'planned-actions-list/:id/forestation', component: ForestationFormComponent},
 ];
 
 @NgModule({
