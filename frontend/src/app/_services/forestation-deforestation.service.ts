@@ -2,12 +2,12 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {ForestryAction, IForestationForm, IPlannedActionsList} from '../_interfaces/ForestryAction';
+import {ForestryAction, IDeforestationForm, IForestationForm, IPlannedActionsList} from '../_interfaces/ForestryAction';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ForestationDeforestationService implements IPlannedActionsList, IForestationForm {
+export class ForestationDeforestationService implements IPlannedActionsList, IForestationForm, IDeforestationForm {
 
   constructor(private http: HttpClient) {
   }
@@ -30,5 +30,9 @@ export class ForestationDeforestationService implements IPlannedActionsList, IFo
 
   addForestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction> {
     return this.http.post<ForestryAction>(environment.apiUrl + 'forestry/' + forestryId + '/forestations/', forestryAction);
+  }
+
+  addDeforestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction> {
+    return this.http.post<ForestryAction>(environment.apiUrl + 'forestry/' + forestryId + '/deforestations/', forestryAction);
   }
 }

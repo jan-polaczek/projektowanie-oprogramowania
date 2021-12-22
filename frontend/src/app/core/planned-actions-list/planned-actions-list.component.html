@@ -36,8 +36,10 @@
 </ng-template>
 
 <div class="row justify-content-around mt-5">
-  <button class="btn btn-primary" [routerLink]="'/planned-actions-list/' + forestryId + '/forestation'">Zaplanuj
-    przeprowadzenie zalesienia
+  <button class="btn btn-primary" [routerLink]="'/planned-actions-list/' + forestryId + '/forestation'">
+    Zaplanuj przeprowadzenie zalesienia
   </button>
-  <button class="btn btn-primary">Zaplanuj przeprowadzenie wycinki</button>
+  <button class="btn btn-primary" [routerLink]="'/planned-actions-list/' + forestryId + '/deforestation'">
+    Zaplanuj przeprowadzenie wycinki
+  </button>
 </div>

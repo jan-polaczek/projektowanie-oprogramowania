@@ -11,6 +11,7 @@ import {MapDetailsComponent} from './map-details/map-details.component';
 import {ForestryMapComponent} from './map/forestry-map.component';
 import {PlannedActionsListComponent} from './planned-actions-list/planned-actions-list.component';
 import {StorageListComponent} from './storage-list/storage-list.component';
+import {DeforestationFormComponent} from "./deforestation-form/deforestation-form.component";
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import {StorageListComponent} from './storage-list/storage-list.component';
     PlannedActionsListComponent,
     StorageListComponent,
     ForestationFormComponent,
+    DeforestationFormComponent,
   ],
   imports: [
     CommonModule,

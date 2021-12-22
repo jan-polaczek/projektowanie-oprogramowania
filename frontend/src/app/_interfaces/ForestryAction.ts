@@ -23,3 +23,7 @@ export interface IPlannedActionsList {
 export interface IForestationForm {
   addForestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction>;
 }
+
+export interface IDeforestationForm {
+  addDeforestation(forestryId: number, forestryAction: ForestryAction): Observable<ForestryAction>;
+}
