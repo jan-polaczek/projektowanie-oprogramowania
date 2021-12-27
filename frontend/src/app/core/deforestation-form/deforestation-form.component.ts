@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ForestationDeforestationService} from '../../_services/forestation-deforestation.service';
+import {ForestryMapComponent} from "../map/forestry-map.component";
 
 @Component({
   selector: 'app-deforestation-form',
@@ -14,6 +15,8 @@ export class DeforestationFormComponent implements OnInit {
   deforestationForm: FormGroup;
   submitted = false;
   forestryId: number;
+
+  @ViewChild(ForestryMapComponent) map: ForestryMapComponent;
 
   constructor(public forestationDeforestationService: ForestationDeforestationService,
               private route: ActivatedRoute,
@@ -40,7 +43,7 @@ export class DeforestationFormComponent implements OnInit {
       .then(() => {
         this.forestationDeforestationService.addDeforestation(this.forestryId,
           {
-            region: null,
+            region: this.map.getRegion(),
             plant_type: this.deforestationForm.value.plant_type,
             start_date: new Date(this.deforestationForm.value.start_date),
             end_date: new Date(this.deforestationForm.value.end_date),

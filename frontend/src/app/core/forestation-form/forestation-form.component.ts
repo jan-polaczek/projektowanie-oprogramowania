@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {IForestationForm} from '../../_interfaces/ForestryAction';
 import {ForestationDeforestationService} from '../../_services/forestation-deforestation.service';
+import {ForestryMapComponent} from "../map/forestry-map.component";
 
 @Component({
   selector: 'app-forestation-form',
@@ -16,6 +17,8 @@ export class ForestationFormComponent implements OnInit {
   submitted = false;
   forestryId: number;
   iForestationForm: IForestationForm;
+
+  @ViewChild(ForestryMapComponent) map: ForestryMapComponent;
 
   constructor(public forestationDeforestationService: ForestationDeforestationService,
               private route: ActivatedRoute,
@@ -39,20 +42,20 @@ export class ForestationFormComponent implements OnInit {
     this.submitted = true;
     if (this.forestationForm.valid) {
       this.modalService.open(content, {centered: true}).result
-        .then(() => {
-          this.forestationDeforestationService.addForestation(this.forestryId,
-            {
-              region: null,
-              plant_type: this.forestationForm.value.plant_type,
-              start_date: new Date(this.forestationForm.value.start_date),
-              end_date: new Date(this.forestationForm.value.end_date),
-              number_of_trees: this.forestationForm.value.number_of_trees,
-            }).subscribe(() => {
-            this.router.navigate(['/planned-actions-list/' + this.forestryId]);
-          });
-        }, () => {
-          console.log('dismiss');
+      .then(() => {
+        this.forestationDeforestationService.addForestation(this.forestryId,
+          {
+            region: this.map.getRegion(),
+            plant_type: this.forestationForm.value.plant_type,
+            start_date: new Date(this.forestationForm.value.start_date),
+            end_date: new Date(this.forestationForm.value.end_date),
+            number_of_trees: this.forestationForm.value.number_of_trees,
+          }).subscribe(() => {
+          this.router.navigate(['/planned-actions-list/' + this.forestryId]);
         });
+      }, () => {
+        console.log('dismiss');
+      });
     }
   }
 

@@ -2,17 +2,8 @@
   <h2>Dodawanie akcji zalesienia</h2>
   <form [formGroup]="forestationForm" (ngSubmit)="saveForestation(content)" novalidate>
     <div class="form-group">
-      <label for="region">Obszar</label>
-      <input
-        type="text"
-        class="form-control"
-        id="region"
-        formControlName="region"
-        name="region"
-      />
-      <div *ngIf="submitted && form.region.invalid" class="alert alert-danger">
-        <div *ngIf="form.region.errors?.required">Uzupełnij pole</div>
-      </div>
+      <label>Obszar</label>
+      <app-map [height]="350"></app-map>
 
       <label for="start_date">Termin rozpoczęcia</label>
       <input

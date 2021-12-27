@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as L from 'leaflet';
 import 'leaflet-draw';
 import {Forestry} from '../../_interfaces/Forestry';
@@ -14,14 +14,14 @@ import {ForestryMapService} from '../../_services/forestry-map.service';
 export class ForestryMapComponent implements OnInit, AfterViewInit {
 
   @Input() height = 500;
-  @Input() forestry: Forestry;
+  @Input() forestry?: Forestry;
 
   private map;
   private forestryShape;
   private featureGroup = new L.FeatureGroup();
 
   constructor(private mapService: ForestryMapService,
-              public activeModal: NgbActiveModal) {
+              public modal: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -30,19 +30,24 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
 
-    this.mapService.getMapData(this.forestry).subscribe(response => {
-      this.forestryShape = response.map_geojson;
-      this.initShapeLayer();
-      this.initDrawing();
+    if (this.forestry != null) {
+      this.mapService.getMapData(this.forestry).subscribe(response => {
+        this.forestryShape = response.map_geojson;
+        this.initShapeLayer();
+        this.initDrawing();
 
-      try {
-        this.map.fitBounds(this.featureGroup.getBounds());
-      } catch (error) {
-      }
-    }, () => {
+        try {
+          this.map.fitBounds(this.featureGroup.getBounds());
+        } catch (error) {
+        }
+      }, () => {
+        this.initShapeLayer();
+        this.initDrawing();
+      });
+    } else {
       this.initShapeLayer();
       this.initDrawing();
-    });
+    }
   }
 
   private initMap(): void {
@@ -133,7 +138,7 @@ export class ForestryMapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  close(): void {
-    this.activeModal.close();
+  getRegion() {
+    return this.featureGroup.toGeoJSON();
   }
 }

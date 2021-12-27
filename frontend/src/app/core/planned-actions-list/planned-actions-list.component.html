@@ -15,7 +15,6 @@
     <td>Obszar #{{action.id}}</td>
     <td>{{action.start_date | date :'dd.MM.yyyy'}} – {{action.end_date | date :'dd.MM.yyyy'}}</td>
     <td class="text-center">
-      <button class="btn btn-outline-primary mx-1">💬</button>
       <button class="btn btn-outline-success mx-1" (click)="removePlannedAction(action)">✔️</button>
     </td>
   </tr>
