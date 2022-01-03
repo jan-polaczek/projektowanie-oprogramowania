@@ -13,10 +13,18 @@
         required
         formControlName="start_date"
         name="start_date"
-        placeholder="YYYY-MM-DD"
+        placeholder="dd-mm-yyyy"
+        appDate
       />
-      <div *ngIf="submitted && form.start_date.invalid" class="alert alert-danger">
-        <div *ngIf="form.start_date.errors?.required">Uzupełnij pole</div>
+      <div
+        *ngIf="submitted && forestationForm.get('start_date').invalid && forestationForm.get('start_date').hasError('required')"
+        class="alert alert-danger">
+        <div>Uzupełnij pole</div>
+      </div>
+      <div
+        *ngIf="submitted && forestationForm.get('start_date').invalid && forestationForm.get('start_date').hasError('invalidDate')"
+        class="alert alert-danger">
+        <div>Zły format daty</div>
       </div>
 
       <label for="end_date">Termin Zakończenia</label>
@@ -27,10 +35,18 @@
         required
         formControlName="end_date"
         name="end_date"
-        placeholder="YYYY-MM-DD"
+        placeholder="dd-mm-yyyy"
+        appDate
       />
-      <div *ngIf="submitted && form.end_date.invalid" class="alert alert-danger">
-        <div *ngIf="form.end_date.errors?.required">Uzupełnij pole</div>
+      <div
+        *ngIf="submitted && forestationForm.get('end_date').invalid && forestationForm.get('end_date').hasError('required')"
+        class="alert alert-danger">
+        <div>Uzupełnij pole</div>
+      </div>
+      <div
+        *ngIf="submitted && forestationForm.get('end_date').invalid && forestationForm.get('end_date').hasError('invalidDate')"
+        class="alert alert-danger">
+        <div>Zły format daty</div>
       </div>
 
       <label for="plant_type">Gatunek Drzew</label>
@@ -43,8 +59,8 @@
         <option [value]="5">Brzoza</option>
         <option [value]="6">Dąb</option>
       </select>
-      <div *ngIf="submitted && form.plant_type.invalid" class="alert alert-danger">
-        <div *ngIf="form.plant_type.errors?.required">Uzupełnij pole</div>
+      <div *ngIf="submitted && forestationForm.get('plant_type').invalid" class="alert alert-danger">
+        <div *ngIf="forestationForm.get('plant_type').hasError('required')">Uzupełnij pole</div>
       </div>
 
       <label for="number_of_trees">Liczba drzew</label>
@@ -56,8 +72,8 @@
         formControlName="number_of_trees"
         name="number_of_trees"
       />
-      <div *ngIf="submitted && form.number_of_trees.invalid" class="alert alert-danger">
-        <div *ngIf="form.number_of_trees.errors?.required">Uzupełnij pole</div>
+      <div *ngIf="submitted && forestationForm.get('number_of_trees').invalid" class="alert alert-danger">
+        <div *ngIf="forestationForm.get('number_of_trees').hasError('required')">Uzupełnij pole</div>
       </div>
 
       <div class="button-row margin-top">
